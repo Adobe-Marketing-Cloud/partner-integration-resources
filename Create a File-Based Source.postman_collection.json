@@ -1,0 +1,634 @@
+{
+	"info": {
+		"_postman_id": "bf41c5d3-80ec-4d4f-85d5-cacea30a8409",
+		"name": "Create a File-Based Source",
+		"description": "This is to create the configuration for a Self-serve Sources batch connector.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "15756582"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Access Token - OAuth2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"ACCESS_TOKEN\", data.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_secret",
+									"value": "{{CLIENT_SECRET}}",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "{{SCOPES}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{IMS}}/ims/token/v3?client_id={{API_KEY}}",
+							"protocol": "https",
+							"host": [
+								"{{IMS}}"
+							],
+							"path": [
+								"ims",
+								"token",
+								"v3"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "{{API_KEY}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sandbox setup",
+			"item": [
+				{
+					"name": "Schema: Create PROFILE Schema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"SCHEMA_ID_PROFILE\", data[\"$id\"]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if(! pm.environment.get(\"UNIQUE_ID\") )",
+									"    pm.environment.set(\"UNIQUE_ID\", \"\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"object\",\n    \"title\": \"{{UNIQUE_NAME}} Sources Test - Profiles\",\n    \"description\": \"Profile data for {{UNIQUE_NAME}} Source Testing\",\n    \"allOf\": [\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/identitymap\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-person-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-personal-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-segmentation\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-preferences-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-work-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-directmarketing\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-subscriptions\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-test-profile\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-push-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-owning-entities\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-privacy\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/mixins/profile-consents\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/mixins/profile/profile-user-account-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                }\n            ],\n    \"meta:immutableTags\": [\n        \"union\"\n    ]\n}"
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/schemas/",
+						"description": "Create a Schema for importing Loyalty data into the profile.\n\nComponents:\n - XDM Individual Profile (class)\n - Profile person details (mixin; adobe)\n - Profile personal details (mixin; adobe)\n - Loyalty details (mixin; partner)"
+					},
+					"response": []
+				},
+				{
+					"name": "Schema: get stats & set TENANT_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"TENANT_ID\", data.tenantId);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/stats"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity for Schema",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"@type\":\"xdm:descriptorIdentity\",\r\n    \"xdm:sourceProperty\":\"/personalEmail/address\",\r\n    \"xdm:property\":\"xdm:code\",\r\n    \"xdm:isPrimary\":true,\r\n    \"xdm:namespace\":\"Email\",\r\n    \"xdm:sourceSchema\":\"{{SCHEMA_ID_PROFILE}}\",\r\n    \"xdm:sourceVersion\":1\r\n}"
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/descriptors"
+					},
+					"response": []
+				},
+				{
+					"name": "DataSet: Create Dataset for Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"var dsId = data[0];",
+									"if(dsId.indexOf(\"@/dataSets/\") === 0)",
+									"    dsId = dsId.substring(11)",
+									"pm.environment.set(\"DATASET_ID_PROFILE\", dsId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{UNIQUE_NAME}} Sources Test Profiles\",\n    \"description\": \"Profile data for {{UNIQUE_NAME}} Sources\",\n    \"schemaRef\": {\n        \"id\": \"{{SCHEMA_ID_PROFILE}}\",\n        \"contentType\": \"application/vnd.adobe.xed-full+json;version=1\"\n    },\n    \"fileDescription\": {\n        \"persisted\": true,\n        \"containerFormat\": \"parquet\",\n        \"format\": \"parquet\"\n    },\n    \"tags\": {\n        \"unifiedIdentity\": [\"enabled:true\"],\n        \"unifiedProfile\": [\"enabled:true\"]\n    }\n}"
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/catalog/datasets"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Source configs",
+			"item": [
+				{
+					"name": "Create Connection Spec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"var csID = data.id;",
+									"pm.environment.set(\"CONNECTION_SPEC_ID\", csID);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n        {\n            \"name\": \"generic-rest-extension\",\n            \"description\": \"Connection Spec\",\n            \"providerId\": \"0ed90a81-07f4-4586-8190-b40eccef1c5a\",\n            \"version\": \"1.0\",\n            \"type\": \"generic-rest\",\n            \"authSpec\": [\n                {\n                    \"name\": \"Basic Authentication\",\n                    \"type\": \"BasicAuthentication\",\n                    \"spec\": {\n                        \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                        \"type\": \"object\",\n                        \"description\": \"defines auth params required for connecting to Mockaroo\",\n                        \"properties\": {\n                            \"username\": {\n                                \"name\": \"API Key\",\n                                \"description\": \"Username for importing data.\",\n                                \"type\": \"string\"\n                            },\n                            \"password\": {\n                                \"description\": \"Password for importing data.\",\n                                \"type\": \"string\",\n                                \"format\": \"password\"\n                            }\n                        },\n                        \"required\":[\n                            \"username\",\n                            \"password\"\n                        ]\n                    }\n                }\n            ],\n            \"sourceSpec\": {\n                \"spec\": {\n                    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                    \"type\": \"object\",\n                    \"description\": \"defines static and user input parameters to fetch resource values.\",\n                    \"properties\": {},\n                    \"required\": []\n                },\n                \"attributes\": {\n                    \"uiAttributes\": {\n                        \"documentationLink\": \"http://www.adobe.com/go/sources-mysource-ui\",\n                        \"isSource\": true,\n                        \"isPreview\": false,\n                        \"category\": {\n                            \"key\": \"payments\"\n                        },\n                        \"icon\": {\n                            \"key\": \"myIcon\"\n                        },\n                        \"description\": {\n                            \"key\": \"myDescription\"\n                        },\n                        \"label\": {\n                            \"text\": \"{{UNIQUE_NAME}} testing source\"\n                        }\n                    },\n                    \"urlParams\": {\n                        \"host\": \"https://my.api.mockaroo.com\",\n                        \"path\": \"(MockarooPath)\",\n                        \"method\": \"GET\",\n                        \"queryParams\": {\n                            \"key\": \"(Example Key)\"\n                        }\n                    },\n                    \"contentPath\": {\n                        \"path\": \"$.data\",\n                        \"skipAttributes\": []\n                    },      \n                    \"paginationParams\": {\n                        \"type\": \"OFFSET\",\n                        \"limitName\": \"count\",\n                        \"limitValue\": \"10\",\n                        \"offSetName\": \"offset\"\n                    },\n                    \"scheduleParams\": {\n                        \"scheduleStartParamName\": \"since_last_changed\",\n                        \"scheduleEndParamName\": \"before_last_changed\",\n                        \"scheduleStartParamFormat\": \"yyyy-MM-ddTHH:mm:ss:fffffffK\",\n                        \"scheduleEndParamFormat\": \"yyyy-MM-ddTHH:mm:ss:fffffffK\"\n                    }\n                }\n            },\n            \"exploreSpec\": {\n                \"name\": \"Resource\",\n                \"type\": \"Resource\",\n                \"requestSpec\": {\n                    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                    \"type\": \"object\"\n                },\n                \"responseSpec\": {\n                    \"$schema\": \"http: //json-schema.org/draft-07/schema#\",\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"format\": {\n                            \"type\": \"string\"\n                        },\n                        \"schema\": {\n                            \"type\": \"object\",\n                            \"properties\": {\n                                \"columns\": {\n                                    \"type\": \"array\",\n                                    \"items\": {\n                                        \"type\": \"object\",\n                                        \"properties\": {\n                                            \"name\": {\n                                                \"type\": \"string\"\n                                            },\n                                            \"type\": {\n                                                \"type\": \"string\"\n                                            }\n                                        }\n                                    }\n                                }\n                            }\n                        },\n                        \"data\": {\n                            \"type\": \"array\",\n                            \"items\": {\n                                \"type\": \"object\"\n                            }\n                        }\n                    }\n                }\n            }\n        }"
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connectionSpecs"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Connection Spec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connectionSpecs/{{CONNECTION_SPEC_ID}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Connection Spec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"var csID = data.id;",
+									"pm.environment.set(\"CONNECTION_SPEC_ID\", csID);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n        {\n            \"name\": \"generic-rest-extension\",\n            \"description\": \"Connection Spec\",\n            \"providerId\": \"0ed90a81-07f4-4586-8190-b40eccef1c5a\",\n            \"version\": \"1.0\",\n            \"type\": \"generic-rest\",\n            \"authSpec\": [\n                {\n                    \"name\": \"Basic Authentication\",\n                    \"type\": \"BasicAuthentication\",\n                    \"spec\": {\n                        \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                        \"type\": \"object\",\n                        \"description\": \"defines auth params required for connecting to Mockaroo\",\n                        \"properties\": {\n                            \"username\": {\n                                \"name\": \"API Key\",\n                                \"description\": \"Username for importing data.\",\n                                \"type\": \"string\"\n                            },\n                            \"password\": {\n                                \"description\": \"Password for importing data.\",\n                                \"type\": \"string\",\n                                \"format\": \"password\"\n                            }\n                        },\n                        \"required\":[\n                            \"username\",\n                            \"password\"\n                        ]\n                    }\n                }\n            ],\n            \"sourceSpec\": {\n                \"spec\": {\n                    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                    \"type\": \"object\",\n                    \"description\": \"defines static and user input parameters to fetch resource values.\",\n                    \"properties\": {},\n                    \"required\": []\n                },\n                \"attributes\": {\n                    \"uiAttributes\": {\n                        \"documentationLink\": \"http://www.adobe.com/go/sources-mysource-ui\",\n                        \"isSource\": true,\n                        \"isPreview\": false,\n                        \"category\": {\n                            \"key\": \"payments\"\n                        },\n                        \"icon\": {\n                            \"key\": \"myIcon\"\n                        },\n                        \"description\": {\n                            \"key\": \"myDescription\"\n                        },\n                        \"label\": {\n                            \"text\": \"{{UNIQUE_NAME}} testing source\"\n                        }\n                    },\n                    \"urlParams\": {\n                        \"host\": \"https://my.api.mockaroo.com\",\n                        \"path\": \"(MockarooPath)\",\n                        \"method\": \"GET\",\n                        \"queryParams\": {\n                            \"key\": \"(Example Key)\"\n                        }\n                    },\n                    \"contentPath\": {\n                        \"path\": \"$.data\",\n                        \"skipAttributes\": []\n                    },      \n                    \"paginationParams\": {\n                        \"type\": \"OFFSET\",\n                        \"limitName\": \"count\",\n                        \"limitValue\": \"10\",\n                        \"offSetName\": \"offset\"\n                    },\n                    \"scheduleParams\": {\n                        \"scheduleStartParamName\": \"since_last_changed\",\n                        \"scheduleEndParamName\": \"before_last_changed\",\n                        \"scheduleStartParamFormat\": \"yyyy-MM-ddTHH:mm:ss:fffffffK\",\n                        \"scheduleEndParamFormat\": \"yyyy-MM-ddTHH:mm:ss:fffffffK\"\n                    }\n                }\n            },\n            \"exploreSpec\": {\n                \"name\": \"Resource\",\n                \"type\": \"Resource\",\n                \"requestSpec\": {\n                    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                    \"type\": \"object\"\n                },\n                \"responseSpec\": {\n                    \"$schema\": \"http: //json-schema.org/draft-07/schema#\",\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"format\": {\n                            \"type\": \"string\"\n                        },\n                        \"schema\": {\n                            \"type\": \"object\",\n                            \"properties\": {\n                                \"columns\": {\n                                    \"type\": \"array\",\n                                    \"items\": {\n                                        \"type\": \"object\",\n                                        \"properties\": {\n                                            \"name\": {\n                                                \"type\": \"string\"\n                                            },\n                                            \"type\": {\n                                                \"type\": \"string\"\n                                            }\n                                        }\n                                    }\n                                }\n                            }\n                        },\n                        \"data\": {\n                            \"type\": \"array\",\n                            \"items\": {\n                                \"type\": \"object\"\n                            }\n                        }\n                    }\n                }\n            }\n        }"
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connectionSpecs/{{CONNECTION_SPEC_ID}}"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Flow Specification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/flowSpecs/6499120c-0b15-42dc-936e-847ea3c24d72"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Flow Specification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "       {\n            \"id\": \"6499120c-0b15-42dc-936e-847ea3c24d72\",\n            \"name\": \"RestStorageToAEP\",\n            \"providerId\": \"0ed90a81-07f4-4586-8190-b40eccef1c5a\",\n            \"version\": \"1.0\",\n            \"sourceConnectionSpecIds\": [\n                \"(Insert Connection spec ID's here)\"\n            ],\n            \"targetConnectionSpecIds\": [\n                \"c604ff05-7f1a-43c0-8e18-33bf874cb11c\"\n            ],\n            \"optionSpec\": {\n                \"name\": \"OptionSpec\",\n                \"spec\": {\n                    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"errorDiagnosticsEnabled\": {\n                            \"title\": \"Error diagnostics.\",\n                            \"description\": \"Flag to enable detailed and sample error diagnostics summary.\",\n                            \"type\": \"boolean\",\n                            \"default\": false\n                        },\n                        \"partialIngestionPercent\": {\n                            \"title\": \"Partial ingestion threshold.\",\n                            \"description\": \"Percentage which defines the threshold of errors allowed before the run is marked as failed.\",\n                            \"type\": \"number\",\n                            \"exclusiveMinimum\": 0\n                        }\n                    }\n                }\n            },\n            \"transformationSpecs\": [\n                {\n                    \"name\": \"Mapping\",\n                    \"spec\": {\n                        \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                        \"type\": \"object\",\n                        \"description\": \"defines various params required for different mapping from source to target\",\n                        \"properties\": {\n                            \"mappingId\": {\n                                \"type\": \"string\"\n                            },\n                            \"mappingVersion\": {\n                                \"type\": \"string\"\n                            }\n                        }\n                    }\n                }\n            ],\n            \"scheduleSpec\": {\n                \"name\": \"PeriodicSchedule\",\n                \"type\": \"Periodic\",\n                \"spec\": {\n                    \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                    \"type\": \"object\",\n                    \"properties\": {\n                        \"startTime\": {\n                            \"description\": \"epoch time\",\n                            \"type\": \"integer\"\n                        },\n                        \"frequency\": {\n                            \"type\": \"string\",\n                            \"enum\": [\n                                \"once\",\n                                \"minute\",\n                                \"hour\",\n                                \"day\",\n                                \"week\"\n                            ]\n                        },\n                        \"interval\": {\n                            \"type\": \"integer\"\n                        },\n                        \"backfill\": {\n                            \"type\": \"boolean\",\n                            \"default\": true\n                        }\n                    },\n                    \"required\": [\n                        \"startTime\",\n                        \"frequency\"\n                    ],\n                    \"if\": {\n                        \"properties\": {\n                            \"frequency\": {\n                                \"const\": \"once\"\n                            }\n                        }\n                    },\n                    \"then\": {\n                        \"allOf\": [\n                            {\n                                \"not\": {\n                                    \"required\": [\n                                        \"interval\"\n                                    ]\n                                }\n                            },\n                            {\n                                \"not\": {\n                                    \"required\": [\n                                        \"backfill\"\n                                    ]\n                                }\n                            }\n                        ]\n                    },\n                    \"else\": {\n                        \"required\": [\n                            \"interval\"\n                        ],\n                        \"if\": {\n                            \"properties\": {\n                                \"frequency\": {\n                                    \"const\": \"minute\"\n                                }\n                            }\n                        },\n                        \"then\": {\n                            \"properties\": {\n                                \"interval\": {\n                                    \"minimum\": 15\n                                }\n                            }\n                        },\n                        \"else\": {\n                            \"properties\": {\n                                \"interval\": {\n                                    \"minimum\": 1\n                                }\n                            }\n                        }\n                    }\n                }\n            },\n            \"attributes\": {\n                \"recordTypeEnabled\": true,\n                \"defaultRecordType\": \"profile\",\n                \"isSourceFlow\": true,\n                \"flacValidationSupported\": true,\n                \"isDraftModeSupported\": true,\n                \"frequency\": \"batch\",\n                \"notification\": {\n                    \"category\": \"sources\",\n                    \"flowRun\": {\n                        \"enabled\": true\n                    }\n                }\n            },\n            \"permissionsInfo\": {\n                \"view\": [\n                    {\n                        \"@type\": \"lowLevel\",\n                        \"name\": \"EnterpriseSource\",\n                        \"permissions\": [\n                            \"read\"\n                        ]\n                    }\n                ],\n                \"manage\": [\n                    {\n                        \"@type\": \"lowLevel\",\n                        \"name\": \"EnterpriseSource\",\n                        \"permissions\": [\n                            \"write\"\n                        ]\n                    }\n                ]\n            }\n        }"
+						},
+						"url": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/flowSpecs/6499120c-0b15-42dc-936e-847ea3c24d72"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mockaroo data",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://my.api.mockaroo.com/users_sjake?key=62e6d0b0",
+							"protocol": "https",
+							"host": [
+								"my",
+								"api",
+								"mockaroo",
+								"com"
+							],
+							"path": [
+								"users_sjake"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "62e6d0b0"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
