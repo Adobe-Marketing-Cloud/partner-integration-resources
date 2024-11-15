@@ -1,0 +1,568 @@
+{
+	"info": {
+		"_postman_id": "446637d9-1f3e-4bf1-9817-d63bcf010b2e",
+		"name": "Create a File-based Destination",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25920785"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Access Token - OAuth2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"ACCESS_TOKEN\", data.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_secret",
+									"value": "{{CLIENT_SECRET}}",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "{{SCOPES}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{IMS}}/ims/token/v3?client_id={{API_KEY}}",
+							"protocol": "https",
+							"host": [
+								"{{IMS}}"
+							],
+							"path": [
+								"ims",
+								"token",
+								"v3"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "{{API_KEY}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sandbox setup",
+			"item": [
+				{
+					"name": "Schema: Create PROFILE Schema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"SCHEMA_ID_PROFILE\", data[\"$id\"]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if(! pm.environment.get(\"UNIQUE_ID\") )",
+									"    pm.environment.set(\"UNIQUE_ID\", \"\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"object\",\n    \"title\": \"{{UNIQUE_NAME}} Test - Profiles\",\n    \"description\": \"Profile data for {{UNIQUE_NAME}} Testing\",\n    \"allOf\": [\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-person-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-personal-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                }\n            ],\n    \"meta:immutableTags\": [\n        \"union\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/schemas/",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"tenant",
+								"schemas",
+								""
+							]
+						},
+						"description": "Create a Schema for importing Loyalty data into the profile.\n\nComponents:\n - XDM Individual Profile (class)\n - Profile person details (mixin; adobe)\n - Profile personal details (mixin; adobe)\n - Loyalty details (mixin; partner)"
+					},
+					"response": []
+				},
+				{
+					"name": "Schema: get stats & set TENANT_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"TENANT_ID\", data.tenantId);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/stats",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity for Schema",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"@type\":\"xdm:descriptorIdentity\",\r\n    \"xdm:sourceProperty\":\"/personalEmail/address\",\r\n    \"xdm:property\":\"xdm:code\",\r\n    \"xdm:isPrimary\":true,\r\n    \"xdm:namespace\":\"Email\",\r\n    \"xdm:sourceSchema\":\"{{SCHEMA_ID_PROFILE}}\",\r\n    \"xdm:sourceVersion\":1\r\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/descriptors",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"tenant",
+								"descriptors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DataSet: Create Dataset for Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"var dsId = data[0];",
+									"if(dsId.indexOf(\"@/dataSets/\") === 0)",
+									"    dsId = dsId.substring(11)",
+									"pm.environment.set(\"DATASET_ID_PROFILE\", dsId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{UNIQUE_NAME}} Test Profiles\",\n    \"description\": \"Profile data for {{UNIQUE_NAME}}\",\n    \"schemaRef\": {\n        \"id\": \"{{SCHEMA_ID_PROFILE}}\",\n        \"contentType\": \"application/vnd.adobe.xed-full+json;version=1\"\n    },\n    \"fileDescription\": {\n        \"persisted\": true,\n        \"containerFormat\": \"parquet\",\n        \"format\": \"parquet\"\n    },\n    \"tags\": {\n        \"unifiedIdentity\": [\"enabled:true\"],\n        \"unifiedProfile\": [\"enabled:true\"]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/catalog/datasets",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"catalog",
+								"datasets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Segment: Create Segment Definition",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"{{UNIQUE_NAME}} - First Name Exists\",\n        \"profileInstanceId\": \"ups\",\n        \"description\": \"First name Exists\",\n        \"expression\": {\n            \"type\": \"PQL\",\n            \"format\": \"pql/text\",\n            \"value\": \"person.name.firstName.isNotNull()\"\n        },\n        \"evaluationInfo\": {\n            \"batch\": {\n                \"enabled\": false\n            },\n            \"continuous\": {\n                \"enabled\": true\n            },\n            \"synchronous\": {\n                \"enabled\": false\n            }\n        },\n        \"schema\": {\n            \"name\": \"_xdm.context.profile\"\n        },\n        \"payloadSchema\": \"string\",\n        \"ttlInDays\": 60\n    }"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/core/ups/segment/definitions",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"core",
+								"ups",
+								"segment",
+								"definitions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Destination Setup",
+			"item": [
+				{
+					"name": "Server Template Configs",
+					"item": [
+						{
+							"name": "Create a Destination Server Template",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = JSON.parse(responseBody);\r",
+											"pm.environment.set(\"DESTINATION_SERVER_ID\", data.instanceId);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"{{UNIQUE_NAME}} S3\",\r\n    \"destinationServerType\": \"FILE_BASED_S3\",\r\n    \"fileBasedS3Destination\": {\r\n        \"bucket\": {\r\n            \"templatingStrategy\": \"PEBBLE_V1\",\r\n            \"value\": \"{{customerData.bucketName}}\"\r\n        },\r\n        \"path\": {\r\n            \"templatingStrategy\": \"PEBBLE_V1\",\r\n            \"value\": \"{{customerData.path}}\"\r\n        }\r\n    },\r\n    \"fileConfigurations\": {\r\n        \"compression\": {\r\n            \"templatingStrategy\": \"PEBBLE_V1\",\r\n            \"value\": \"{{customerData.compression}}\"\r\n        },\r\n        \"fileType\": {\r\n            \"templatingStrategy\": \"PEBBLE_V1\",\r\n            \"value\": \"{{customerData.fileType}}\"\r\n        },\r\n        \"csvOptions\": {\r\n            \"quote\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"\\\"\"\r\n            },\r\n            \"quoteAll\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"false\"\r\n            },\r\n            \"escape\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"\\\\\"\r\n            },\r\n            \"escapeQuotes\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"true\"\r\n            },\r\n            \"header\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"true\"\r\n            },\r\n            \"ignoreLeadingWhiteSpace\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"true\"\r\n            },\r\n            \"ignoreTrailingWhiteSpace\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"true\"\r\n            },\r\n            \"nullValue\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"\"\r\n            },\r\n            \"dateFormat\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"yyyy-MM-dd\"\r\n            },\r\n            \"timestampFormat\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"yyyy-MM-dd'T':mm:ss[.SSS][XXX]\"\r\n            },\r\n            \"charToEscapeQuoteEscaping\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"\\\\\"\r\n            },\r\n            \"emptyValue\": {\r\n                \"templatingStrategy\": \"NONE\",\r\n                \"value\": \"\"\r\n            }\r\n        }\r\n    }\r\n}\r\n"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destination-servers",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destination-servers"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Destination Configs",
+					"item": [
+						{
+							"name": "Create a Destination Config",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"{{UNIQUE_NAME}}\",\r\n    \"description\": \"Amazon S3 destination is a fictional destination, used for a POC.\",\r\n    \"status\": \"Test\",\r\n    \"customerAuthenticationConfigurations\": [\r\n        {\r\n            \"authType\": \"S3\"\r\n        }\r\n    ],\r\n    \"customerEncryptionConfigurations\": [],\r\n    \"customerDataFields\": [\r\n        {\r\n            \"name\": \"bucketName\",\r\n            \"title\": \"Amazon S3 bucket name\",\r\n            \"description\": \"Enter the Amazon S3 Bucket name that will host the exported files.\",\r\n            \"type\": \"string\",\r\n            \"isRequired\": true,\r\n            \"pattern\": \"(?=^.{3,63}$)(?!^(\\\\d+\\\\.)+\\\\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\\\\-]*[a-z0-9])\\\\.)*([a-z0-9]|[a-z0-9][a-z0-9\\\\-]*[a-z0-9])$)\",\r\n            \"readOnly\": false,\r\n            \"hidden\": false\r\n        },\r\n        {\r\n            \"name\": \"path\",\r\n            \"title\": \"Amazon S3 path\",\r\n            \"description\": \"Enter Amazon S3 folder path\",\r\n            \"type\": \"string\",\r\n            \"isRequired\": true,\r\n            \"pattern\": \"^[0-9a-zA-Z\\\\/\\\\!\\\\-_\\\\.\\\\*\\\\''\\\\(\\\\)]*((\\\\%SEGMENT_(NAME|ID)\\\\%)?\\\\/?)+$\",\r\n            \"readOnly\": false,\r\n            \"hidden\": false\r\n        },\r\n        {\r\n            \"name\": \"compression\",\r\n            \"title\": \"Select compression type\",\r\n            \"description\": \"Select the file compression type used by the exported files.\",\r\n            \"type\": \"string\",\r\n            \"isRequired\": true,\r\n            \"readOnly\": false,\r\n            \"enum\": [\r\n                \"GZIP\",\r\n                \"NONE\",\r\n                \"bzip2\",\r\n                \"lz4\",\r\n                \"snappy\",\r\n                \"deflate\"\r\n            ]\r\n        },\r\n        {\r\n            \"name\": \"fileType\",\r\n            \"title\": \"Select a file format\",\r\n            \"description\": \"Select the file format to be used by the exported files.\",\r\n            \"type\": \"string\",\r\n            \"isRequired\": true,\r\n            \"readOnly\": false,\r\n            \"hidden\": false,\r\n            \"enum\": [\r\n                \"csv\",\r\n                \"json\",\r\n                \"parquet\"\r\n            ],\r\n            \"default\": \"csv\"\r\n        }\r\n    ],\r\n    \"uiAttributes\": {\r\n        \"documentationLink\": \"https://www.adobe.com/go/destinations-YOURDESTINATION-en\",\r\n        \"category\": \"S3\",\r\n        \"connectionType\": \"S3\",\r\n        \"flowRunsSupported\": true,\r\n        \"monitoringSupported\": true,\r\n        \"frequency\": \"Batch\"\r\n    },\r\n    \"destinationDelivery\": [\r\n        {\r\n            \"deliveryMatchers\": [\r\n                {\r\n                    \"type\": \"SOURCE\",\r\n                    \"value\": [\r\n                        \"batch\"\r\n                    ]\r\n                }\r\n            ],\r\n            \"authenticationRule\": \"CUSTOMER_AUTHENTICATION\",\r\n            \"destinationServerId\": \"{{DESTINATION_SERVER_ID}}\"\r\n        }\r\n    ],\r\n    \"schemaConfig\": {\r\n        \"requiredMappingsOnly\": false,\r\n        \"requiredMappings\": [\r\n        {\r\n            \"destination\": \"Email\",\r\n            \"mandatoryRequired\": true,\r\n            \"primaryKeyRequired\": true\r\n        },\r\n        {\r\n            \"destination\": \"FirstName\",\r\n            \"mandatoryRequired\": true,\r\n            \"primaryKeyRequired\": true\r\n        },\r\n        {\r\n            \"destination\": \"LastName\",\r\n            \"mandatoryRequired\": true,\r\n            \"primaryKeyRequired\": true\r\n        }\r\n        ]\r\n    },\r\n    \"batchConfig\": {\r\n        \"allowMandatoryFieldSelection\": true,\r\n        \"allowDedupeKeyFieldSelection\": true,\r\n        \"defaultExportMode\": \"DAILY_FULL_EXPORT\",\r\n        \"allowedExportMode\": [\r\n            \"DAILY_FULL_EXPORT\",\r\n            \"FIRST_FULL_THEN_INCREMENTAL\"\r\n        ],\r\n        \"allowedScheduleFrequency\": [\r\n            \"DAILY\",\r\n            \"EVERY_3_HOURS\",\r\n            \"EVERY_6_HOURS\",\r\n            \"EVERY_8_HOURS\",\r\n            \"EVERY_12_HOURS\",\r\n            \"ONCE\"\r\n        ],\r\n        \"defaultFrequency\": \"DAILY\",\r\n        \"defaultStartTime\": \"00:00\",\r\n       \"filenameConfig\":{\r\n         \"allowedFilenameAppendOptions\":[\r\n            \"SEGMENT_NAME\",\r\n            \"DESTINATION_INSTANCE_ID\",\r\n            \"DESTINATION_INSTANCE_NAME\",\r\n            \"ORGANIZATION_NAME\",\r\n            \"SANDBOX_NAME\",\r\n            \"DATETIME\",\r\n            \"CUSTOM_TEXT\"\r\n         ],\r\n         \"defaultFilenameAppendOptions\":[\r\n            \"DATETIME\"\r\n         ],\r\n         \"defaultFilename\":\"%DESTINATION%_%SEGMENT_ID%\"\r\n      }\r\n    },\r\n    \"segmentGroupingEnabled\":true,\r\n    \"backfillHistoricalProfileData\": true\r\n}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

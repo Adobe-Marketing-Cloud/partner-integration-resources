@@ -1,0 +1,1718 @@
+{
+	"info": {
+		"_postman_id": "3bd5f04f-5899-4686-a0e5-a8e78f2af764",
+		"name": "Marketo REST API",
+		"description": "Authenticate to Marketo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Started",
+			"item": [
+				{
+					"name": "Step 1: Authenticate",
+					"item": [
+						{
+							"name": "Get access token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = JSON.parse(responseBody);",
+											"pm.environment.set(\"access_token\", data.access_token);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "https://{{munchkin_id}}.mktorest.com/identity/oauth/token?grant_type=client_credentials&client_id={{client_id}}&client_secret={{client_secret}}",
+									"protocol": "https",
+									"host": [
+										"{{munchkin_id}}",
+										"mktorest",
+										"com"
+									],
+									"path": [
+										"identity",
+										"oauth",
+										"token"
+									],
+									"query": [
+										{
+											"key": "grant_type",
+											"value": "client_credentials"
+										},
+										{
+											"key": "client_id",
+											"value": "{{client_id}}",
+											"description": "found in Admin > LaunchPoint"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client_secret}}",
+											"description": "found in Admin > LaunchPoint"
+										}
+									]
+								},
+								"description": "Access token used to work with the Marketo REST API. Generally a token expires after 1 hour"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Step 2: Create Leads",
+					"item": [
+						{
+							"name": "Create 50 sample leads",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"action\": \"createOnly\",\n  \"lookupField\": \"email\",\n  \"input\": [\n    {\n      \"email\": \"mwaiton0@elpais.com\",\n      \"firstName\": \"Meredith\",\n      \"lastName\": \"Waiton\",\n      \"title\": \"Desktop Support Technician\",\n      \"company\": \"Abbott Inc\",\n      \"phone\": \"3304339513\",\n      \"leadStatus\": \"Fuscia\",\n      \"leadScore\": 32,\n      \"leadSource\": \"Disappearance of Alice Creed, The\",\n      \"address\": \"603 Jenna Alley\",\n      \"city\": \"Youngstown\",\n      \"state\": \"Ohio\",\n      \"postalCode\": \"44505\"\n    },\n    {\n      \"email\": \"lblackey1@dedecms.com\",\n      \"firstName\": \"Leela\",\n      \"lastName\": \"Blackey\",\n      \"title\": \"Financial Advisor\",\n      \"company\": \"Goodwin-Lubowitz\",\n      \"phone\": \"7652398700\",\n      \"leadStatus\": \"Indigo\",\n      \"leadScore\": 13,\n      \"leadSource\": \"Whole Nine Yards, The\",\n      \"address\": \"911 Surrey Plaza\",\n      \"city\": \"Muncie\",\n      \"state\": \"Indiana\",\n      \"postalCode\": \"47306\"\n    },\n    {\n      \"email\": \"fdorrell2@tmall.com\",\n      \"firstName\": \"Flore\",\n      \"lastName\": \"Dorrell\",\n      \"title\": \"Budget/Accounting Analyst I\",\n      \"company\": \"Bergstrom, Tromp and Roob\",\n      \"phone\": \"9545348062\",\n      \"leadStatus\": \"Turquoise\",\n      \"leadScore\": 49,\n      \"leadSource\": \"Burning Bright\",\n      \"address\": \"8475 Shasta Avenue\",\n      \"city\": \"Miami\",\n      \"state\": \"Florida\",\n      \"postalCode\": \"33180\"\n    },\n    {\n      \"email\": \"ajaffray3@joomla.org\",\n      \"firstName\": \"Alford\",\n      \"lastName\": \"Jaffray\",\n      \"title\": \"Software Test Engineer IV\",\n      \"company\": \"Hirthe-Fahey\",\n      \"phone\": \"2603656200\",\n      \"leadStatus\": \"Fuscia\",\n      \"leadScore\": 18,\n      \"leadSource\": \"4 for Texas\",\n      \"address\": \"7 Reinke Lane\",\n      \"city\": \"Fort Wayne\",\n      \"state\": \"Indiana\",\n      \"postalCode\": \"46857\"\n    },\n    {\n      \"email\": \"abuey4@phoca.cz\",\n      \"firstName\": \"Archibaldo\",\n      \"lastName\": \"Buey\",\n      \"title\": \"Administrative Officer\",\n      \"company\": \"Aufderhar, Quitzon and Upton\",\n      \"phone\": \"8644577960\",\n      \"leadStatus\": \"Mauv\",\n      \"leadScore\": 41,\n      \"leadSource\": \"Prisoner of Paradise\",\n      \"address\": \"14787 Kropf Court\",\n      \"city\": \"Greenville\",\n      \"state\": \"South Carolina\",\n      \"postalCode\": \"29605\"\n    },\n    {\n      \"email\": \"pfieldgate5@godaddy.com\",\n      \"firstName\": \"Prue\",\n      \"lastName\": \"Fieldgate\",\n      \"title\": \"Senior Developer\",\n      \"company\": \"Hauck and Sons\",\n      \"phone\": \"9411524696\",\n      \"leadStatus\": \"Puce\",\n      \"leadScore\": 42,\n      \"leadSource\": \"Ride Lonesome\",\n      \"address\": \"0919 Memorial Road\",\n      \"city\": \"Port Charlotte\",\n      \"state\": \"Florida\",\n      \"postalCode\": \"33954\"\n    },\n    {\n      \"email\": \"spedrick6@loc.gov\",\n      \"firstName\": \"Si\",\n      \"lastName\": \"Pedrick\",\n      \"title\": \"Staff Accountant I\",\n      \"company\": \"Hudson, Bernier and Treutel\",\n      \"phone\": \"5122038186\",\n      \"leadStatus\": \"Pink\",\n      \"leadScore\": 57,\n      \"leadSource\": \"Hard Luck\",\n      \"address\": \"755 Towne Park\",\n      \"city\": \"Austin\",\n      \"state\": \"Texas\",\n      \"postalCode\": \"78715\"\n    },\n    {\n      \"email\": \"ebollum7@hp.com\",\n      \"firstName\": \"Etienne\",\n      \"lastName\": \"Bollum\",\n      \"title\": \"Compensation Analyst\",\n      \"company\": \"Kessler-Purdy\",\n      \"phone\": \"2053511927\",\n      \"leadStatus\": \"Purple\",\n      \"leadScore\": 37,\n      \"leadSource\": \"Bachelor Party\",\n      \"address\": \"72134 Macpherson Road\",\n      \"city\": \"Birmingham\",\n      \"state\": \"Alabama\",\n      \"postalCode\": \"35215\"\n    },\n    {\n      \"email\": \"pkillwick8@joomla.org\",\n      \"firstName\": \"Paten\",\n      \"lastName\": \"Killwick\",\n      \"title\": \"Account Coordinator\",\n      \"company\": \"Schaden, McKenzie and Bednar\",\n      \"phone\": \"8591428404\",\n      \"leadStatus\": \"Maroon\",\n      \"leadScore\": 28,\n      \"leadSource\": \"Perfect Stranger\",\n      \"address\": \"9909 Wayridge Terrace\",\n      \"city\": \"Lexington\",\n      \"state\": \"Kentucky\",\n      \"postalCode\": \"40591\"\n    },\n    {\n      \"email\": \"pgibbens9@imdb.com\",\n      \"firstName\": \"Pauly\",\n      \"lastName\": \"Gibbens\",\n      \"title\": \"Technical Writer\",\n      \"company\": \"Berge Group\",\n      \"phone\": \"9417568638\",\n      \"leadStatus\": \"Fuscia\",\n      \"leadScore\": 89,\n      \"leadSource\": \"Dear Brigitte\",\n      \"address\": \"8 Eastlawn Crossing\",\n      \"city\": \"Seminole\",\n      \"state\": \"Florida\",\n      \"postalCode\": \"34642\"\n    },\n    {\n      \"email\": \"ctolomeia@jigsy.com\",\n      \"firstName\": \"Cassandry\",\n      \"lastName\": \"Tolomei\",\n      \"title\": \"Financial Advisor\",\n      \"company\": \"Beahan-Spencer\",\n      \"phone\": \"4345782877\",\n      \"leadStatus\": \"Goldenrod\",\n      \"leadScore\": 15,\n      \"leadSource\": \"V/H/S/2\",\n      \"address\": \"32 Lindbergh Point\",\n      \"city\": \"Durham\",\n      \"state\": \"North Carolina\",\n      \"postalCode\": \"27705\"\n    },\n    {\n      \"email\": \"gsuddardsb@comsenz.com\",\n      \"firstName\": \"Gustie\",\n      \"lastName\": \"Suddards\",\n      \"title\": \"Geologist I\",\n      \"company\": \"Blick-Walsh\",\n      \"phone\": \"8151415559\",\n      \"leadStatus\": \"Maroon\",\n      \"leadScore\": 58,\n      \"leadSource\": \"Tormented\",\n      \"address\": \"8995 Erie Hill\",\n      \"city\": \"Rockford\",\n      \"state\": \"Illinois\",\n      \"postalCode\": \"61105\"\n    },\n    {\n      \"email\": \"tstonehewerc@51.la\",\n      \"firstName\": \"Tore\",\n      \"lastName\": \"Stonehewer\",\n      \"title\": \"Administrative Officer\",\n      \"company\": \"Bechtelar, Gislason and Dooley\",\n      \"phone\": \"6063869010\",\n      \"leadStatus\": \"Crimson\",\n      \"leadScore\": 45,\n      \"leadSource\": \"Shaolin Temple, The (Shao Lin Si)\",\n      \"address\": \"46 Carioca Point\",\n      \"city\": \"London\",\n      \"state\": \"Kentucky\",\n      \"postalCode\": \"40745\"\n    },\n    {\n      \"email\": \"gradbournd@1und1.de\",\n      \"firstName\": \"Giles\",\n      \"lastName\": \"Radbourn\",\n      \"title\": \"Statistician II\",\n      \"company\": \"Greenholt-Hettinger\",\n      \"phone\": \"8501549967\",\n      \"leadStatus\": \"Yellow\",\n      \"leadScore\": 8,\n      \"leadSource\": \"Border Café\",\n      \"address\": \"852 Rieder Hill\",\n      \"city\": \"Pensacola\",\n      \"state\": \"Florida\",\n      \"postalCode\": \"32595\"\n    },\n    {\n      \"email\": \"cgyorgye@theatlantic.com\",\n      \"firstName\": \"Cordie\",\n      \"lastName\": \"Gyorgy\",\n      \"title\": \"Registered Nurse\",\n      \"company\": \"Goodwin-Gerlach\",\n      \"phone\": \"2396301336\",\n      \"leadStatus\": \"Crimson\",\n      \"leadScore\": 18,\n      \"leadSource\": \"Truth in 24\",\n      \"address\": \"9 Springs Trail\",\n      \"city\": \"Naples\",\n      \"state\": \"Florida\",\n      \"postalCode\": \"34114\"\n    },\n    {\n      \"email\": \"nbellof@cyberchimps.com\",\n      \"firstName\": \"Nadine\",\n      \"lastName\": \"Bello\",\n      \"title\": \"Teacher\",\n      \"company\": \"Cremin-Keeling\",\n      \"phone\": \"5719752560\",\n      \"leadStatus\": \"Puce\",\n      \"leadScore\": 63,\n      \"leadSource\": \"Sharktopus\",\n      \"address\": \"39652 Fuller Parkway\",\n      \"city\": \"Ashburn\",\n      \"state\": \"Virginia\",\n      \"postalCode\": \"22093\"\n    },\n    {\n      \"email\": \"awinterscaleg@networksolutions.com\",\n      \"firstName\": \"Anselm\",\n      \"lastName\": \"Winterscale\",\n      \"title\": \"Nurse\",\n      \"company\": \"Bosco Group\",\n      \"phone\": \"5105607134\",\n      \"leadStatus\": \"Aquamarine\",\n      \"leadScore\": 62,\n      \"leadSource\": \"Gracie's Choice\",\n      \"address\": \"403 Maple Circle\",\n      \"city\": \"Berkeley\",\n      \"state\": \"California\",\n      \"postalCode\": \"94705\"\n    },\n    {\n      \"email\": \"sprendevilleh@alexa.com\",\n      \"firstName\": \"Saloma\",\n      \"lastName\": \"Prendeville\",\n      \"title\": \"Computer Systems Analyst I\",\n      \"company\": \"Schaden Group\",\n      \"phone\": \"5622383229\",\n      \"leadStatus\": \"Goldenrod\",\n      \"leadScore\": 51,\n      \"leadSource\": \"Spontaneous Combustion\",\n      \"address\": \"3 Sherman Plaza\",\n      \"city\": \"Long Beach\",\n      \"state\": \"California\",\n      \"postalCode\": \"90810\"\n    },\n    {\n      \"email\": \"dgildeai@networksolutions.com\",\n      \"firstName\": \"Drugi\",\n      \"lastName\": \"Gildea\",\n      \"title\": \"Statistician I\",\n      \"company\": \"Greenfelder-Volkman\",\n      \"phone\": \"2252523871\",\n      \"leadStatus\": \"Puce\",\n      \"leadScore\": 82,\n      \"leadSource\": \"Infernal Affairs 2 (Mou gaan dou II)\",\n      \"address\": \"6947 Larry Drive\",\n      \"city\": \"Baton Rouge\",\n      \"state\": \"Louisiana\",\n      \"postalCode\": \"70805\"\n    },\n    {\n      \"email\": \"vaersj@theatlantic.com\",\n      \"firstName\": \"Vonny\",\n      \"lastName\": \"Aers\",\n      \"title\": \"Librarian\",\n      \"company\": \"Johnston, Abshire and Collier\",\n      \"phone\": \"7192694928\",\n      \"leadStatus\": \"Puce\",\n      \"leadScore\": 42,\n      \"leadSource\": \"Newlyweds\",\n      \"address\": \"853 Killdeer Crossing\",\n      \"city\": \"Colorado Springs\",\n      \"state\": \"Colorado\",\n      \"postalCode\": \"80915\"\n    },\n    {\n      \"email\": \"ksommervillek@technorati.com\",\n      \"firstName\": \"Kai\",\n      \"lastName\": \"Sommerville\",\n      \"title\": \"Occupational Therapist\",\n      \"company\": \"Stroman-Blick\",\n      \"phone\": \"9158308240\",\n      \"leadStatus\": \"Khaki\",\n      \"leadScore\": 24,\n      \"leadSource\": \"T.N.T.\",\n      \"address\": \"56933 Hazelcrest Plaza\",\n      \"city\": \"El Paso\",\n      \"state\": \"Texas\",\n      \"postalCode\": \"88563\"\n    },\n    {\n      \"email\": \"fdowzelll@imgur.com\",\n      \"firstName\": \"Frazer\",\n      \"lastName\": \"Dowzell\",\n      \"title\": \"GIS Technical Architect\",\n      \"company\": \"Borer-Shanahan\",\n      \"phone\": \"8046263724\",\n      \"leadStatus\": \"Blue\",\n      \"leadScore\": 33,\n      \"leadSource\": \"Ossos\",\n      \"address\": \"7 Harper Crossing\",\n      \"city\": \"Richmond\",\n      \"state\": \"Virginia\",\n      \"postalCode\": \"23272\"\n    },\n    {\n      \"email\": \"bcustedm@purevolume.com\",\n      \"firstName\": \"Bebe\",\n      \"lastName\": \"Custed\",\n      \"title\": \"Actuary\",\n      \"company\": \"Stiedemann Group\",\n      \"phone\": \"9176476093\",\n      \"leadStatus\": \"Teal\",\n      \"leadScore\": 24,\n      \"leadSource\": \"Ghost Adventures\",\n      \"address\": \"57754 Blaine Parkway\",\n      \"city\": \"Jamaica\",\n      \"state\": \"New York\",\n      \"postalCode\": \"11470\"\n    },\n    {\n      \"email\": \"bchaizen@zdnet.com\",\n      \"firstName\": \"Brigg\",\n      \"lastName\": \"Chaize\",\n      \"title\": \"Tax Accountant\",\n      \"company\": \"Fritsch Inc\",\n      \"phone\": \"8053352223\",\n      \"leadStatus\": \"Purple\",\n      \"leadScore\": 95,\n      \"leadSource\": \"Far Horizons, The\",\n      \"address\": \"4442 Center Avenue\",\n      \"city\": \"Santa Barbara\",\n      \"state\": \"California\",\n      \"postalCode\": \"93150\"\n    },\n    {\n      \"email\": \"ldowleo@merriam-webster.com\",\n      \"firstName\": \"Lacey\",\n      \"lastName\": \"Dowle\",\n      \"title\": \"Senior Cost Accountant\",\n      \"company\": \"Gottlieb-Larkin\",\n      \"phone\": \"5627114317\",\n      \"leadStatus\": \"Violet\",\n      \"leadScore\": 10,\n      \"leadSource\": \"Mad Bastards\",\n      \"address\": \"25122 Ramsey Hill\",\n      \"city\": \"Whittier\",\n      \"state\": \"California\",\n      \"postalCode\": \"90610\"\n    },\n    {\n      \"email\": \"tbarettep@wikimedia.org\",\n      \"firstName\": \"Trix\",\n      \"lastName\": \"Barette\",\n      \"title\": \"Business Systems Development Analyst\",\n      \"company\": \"Lakin, Torphy and Block\",\n      \"phone\": \"5093923932\",\n      \"leadStatus\": \"Mauv\",\n      \"leadScore\": 44,\n      \"leadSource\": \"After the Rain (Ame agaru) \",\n      \"address\": \"78 Mayfield Trail\",\n      \"city\": \"Yakima\",\n      \"state\": \"Washington\",\n      \"postalCode\": \"98907\"\n    },\n    {\n      \"email\": \"jtadmanq@thetimes.co.uk\",\n      \"firstName\": \"Judye\",\n      \"lastName\": \"Tadman\",\n      \"title\": \"Accounting Assistant I\",\n      \"company\": \"Bogisich, Wilderman and Stokes\",\n      \"phone\": \"4694898992\",\n      \"leadStatus\": \"Khaki\",\n      \"leadScore\": 32,\n      \"leadSource\": \"Kahaani\",\n      \"address\": \"5 Dakota Center\",\n      \"city\": \"Dallas\",\n      \"state\": \"Texas\",\n      \"postalCode\": \"75241\"\n    },\n    {\n      \"email\": \"gpiochr@soundcloud.com\",\n      \"firstName\": \"Gonzales\",\n      \"lastName\": \"Pioch\",\n      \"title\": \"Research Assistant II\",\n      \"company\": \"Berge, Windler and Hane\",\n      \"phone\": \"5711435854\",\n      \"leadStatus\": \"Khaki\",\n      \"leadScore\": 10,\n      \"leadSource\": \"Way, The\",\n      \"address\": \"78 Macpherson Drive\",\n      \"city\": \"Dulles\",\n      \"state\": \"Virginia\",\n      \"postalCode\": \"20189\"\n    },\n    {\n      \"email\": \"nlobells@miibeian.gov.cn\",\n      \"firstName\": \"Nertie\",\n      \"lastName\": \"Lobell\",\n      \"title\": \"Civil Engineer\",\n      \"company\": \"Hackett Group\",\n      \"phone\": \"4053184511\",\n      \"leadStatus\": \"Violet\",\n      \"leadScore\": 57,\n      \"leadSource\": \"Blame It on Rio\",\n      \"address\": \"9 Menomonie Street\",\n      \"city\": \"Oklahoma City\",\n      \"state\": \"Oklahoma\",\n      \"postalCode\": \"73147\"\n    },\n    {\n      \"email\": \"gkisbeet@latimes.com\",\n      \"firstName\": \"Glad\",\n      \"lastName\": \"Kisbee\",\n      \"title\": \"Occupational Therapist\",\n      \"company\": \"Price Group\",\n      \"phone\": \"9173356515\",\n      \"leadStatus\": \"Pink\",\n      \"leadScore\": 25,\n      \"leadSource\": \"Girl of Finland (Lapualaismorsian)\",\n      \"address\": \"397 Thompson Crossing\",\n      \"city\": \"New York City\",\n      \"state\": \"New York\",\n      \"postalCode\": \"10270\"\n    },\n    {\n      \"email\": \"thassenu@technorati.com\",\n      \"firstName\": \"Teodoor\",\n      \"lastName\": \"Hassen\",\n      \"title\": \"Operator\",\n      \"company\": \"Smitham, Howell and McDermott\",\n      \"phone\": \"2814604121\",\n      \"leadStatus\": \"Teal\",\n      \"leadScore\": 53,\n      \"leadSource\": \"Stormy Monday\",\n      \"address\": \"42602 Carpenter Junction\",\n      \"city\": \"Houston\",\n      \"state\": \"Texas\",\n      \"postalCode\": \"77030\"\n    },\n    {\n      \"email\": \"cnisbithv@plala.or.jp\",\n      \"firstName\": \"Clary\",\n      \"lastName\": \"Nisbith\",\n      \"title\": \"Analog Circuit Design manager\",\n      \"company\": \"Heaney, Hoeger and Wisoky\",\n      \"phone\": \"5745899471\",\n      \"leadStatus\": \"Aquamarine\",\n      \"leadScore\": 22,\n      \"leadSource\": \"Dealer\",\n      \"address\": \"800 Bartelt Parkway\",\n      \"city\": \"South Bend\",\n      \"state\": \"Indiana\",\n      \"postalCode\": \"46620\"\n    },\n    {\n      \"email\": \"aspinagew@google.com\",\n      \"firstName\": \"Ase\",\n      \"lastName\": \"Spinage\",\n      \"title\": \"Accounting Assistant I\",\n      \"company\": \"Bergstrom-Schinner\",\n      \"phone\": \"2518958328\",\n      \"leadStatus\": \"Maroon\",\n      \"leadScore\": 11,\n      \"leadSource\": \"Touch of Evil\",\n      \"address\": \"0 Prairie Rose Lane\",\n      \"city\": \"Mobile\",\n      \"state\": \"Alabama\",\n      \"postalCode\": \"36628\"\n    },\n    {\n      \"email\": \"kshanklinx@cbslocal.com\",\n      \"firstName\": \"Korrie\",\n      \"lastName\": \"Shanklin\",\n      \"title\": \"VP Sales\",\n      \"company\": \"Ankunding Group\",\n      \"phone\": \"7752990889\",\n      \"leadStatus\": \"Pink\",\n      \"leadScore\": 86,\n      \"leadSource\": \"Perfect World, A\",\n      \"address\": \"054 Commercial Terrace\",\n      \"city\": \"Carson City\",\n      \"state\": \"Nevada\",\n      \"postalCode\": \"89714\"\n    },\n    {\n      \"email\": \"csimeonovy@craigslist.org\",\n      \"firstName\": \"Clareta\",\n      \"lastName\": \"Simeonov\",\n      \"title\": \"GIS Technical Architect\",\n      \"company\": \"Rohan LLC\",\n      \"phone\": \"2021578390\",\n      \"leadStatus\": \"Violet\",\n      \"leadScore\": 44,\n      \"leadSource\": \"Page One: Inside the New York Times\",\n      \"address\": \"960 Melvin Park\",\n      \"city\": \"Washington\",\n      \"state\": \"District of Columbia\",\n      \"postalCode\": \"20215\"\n    },\n    {\n      \"email\": \"fespinoyz@fotki.com\",\n      \"firstName\": \"Flori\",\n      \"lastName\": \"Espinoy\",\n      \"title\": \"Environmental Tech\",\n      \"company\": \"Schultz-Smitham\",\n      \"phone\": \"5058860535\",\n      \"leadStatus\": \"Pink\",\n      \"leadScore\": 96,\n      \"leadSource\": \"Dirty Rotten Scoundrels\",\n      \"address\": \"6582 Westport Avenue\",\n      \"city\": \"Albuquerque\",\n      \"state\": \"New Mexico\",\n      \"postalCode\": \"87195\"\n    },\n    {\n      \"email\": \"gferebee10@sohu.com\",\n      \"firstName\": \"Gil\",\n      \"lastName\": \"Ferebee\",\n      \"title\": \"Automation Specialist I\",\n      \"company\": \"Dickinson LLC\",\n      \"phone\": \"2097244668\",\n      \"leadStatus\": \"Orange\",\n      \"leadScore\": 54,\n      \"leadSource\": \"Shining, The\",\n      \"address\": \"267 Schurz Center\",\n      \"city\": \"Stockton\",\n      \"state\": \"California\",\n      \"postalCode\": \"95219\"\n    },\n    {\n      \"email\": \"dsarfatti11@auda.org.au\",\n      \"firstName\": \"Dermot\",\n      \"lastName\": \"Sarfatti\",\n      \"title\": \"Occupational Therapist\",\n      \"company\": \"Gorczany-Moen\",\n      \"phone\": \"7193361222\",\n      \"leadStatus\": \"Indigo\",\n      \"leadScore\": 40,\n      \"leadSource\": \"Free Zone\",\n      \"address\": \"33631 Meadow Valley Point\",\n      \"city\": \"Pueblo\",\n      \"state\": \"Colorado\",\n      \"postalCode\": \"81010\"\n    },\n    {\n      \"email\": \"wtullett12@columbia.edu\",\n      \"firstName\": \"Wallas\",\n      \"lastName\": \"Tullett\",\n      \"title\": \"Quality Control Specialist\",\n      \"company\": \"Conn, Abshire and Sawayn\",\n      \"phone\": \"6785824900\",\n      \"leadStatus\": \"Green\",\n      \"leadScore\": 51,\n      \"leadSource\": \"More the Merrier, The\",\n      \"address\": \"6118 Village Road\",\n      \"city\": \"Atlanta\",\n      \"state\": \"Georgia\",\n      \"postalCode\": \"30316\"\n    },\n    {\n      \"email\": \"yhathorn13@msu.edu\",\n      \"firstName\": \"Yankee\",\n      \"lastName\": \"Hathorn\",\n      \"title\": \"Chief Design Engineer\",\n      \"company\": \"Mohr LLC\",\n      \"phone\": \"2537222551\",\n      \"leadStatus\": \"Violet\",\n      \"leadScore\": 89,\n      \"leadSource\": \"How Tasty Was My Little Frenchman (Como Era Gostoso o Meu Francês)\",\n      \"address\": \"97509 Quincy Point\",\n      \"city\": \"Tacoma\",\n      \"state\": \"Washington\",\n      \"postalCode\": \"98442\"\n    },\n    {\n      \"email\": \"edearle14@hp.com\",\n      \"firstName\": \"Elmira\",\n      \"lastName\": \"Dearle\",\n      \"title\": \"Payment Adjustment Coordinator\",\n      \"company\": \"Powlowski, Schuppe and Heaney\",\n      \"phone\": \"8137104268\",\n      \"leadStatus\": \"Red\",\n      \"leadScore\": 42,\n      \"leadSource\": \"New Waterford Girl\",\n      \"address\": \"742 Declaration Crossing\",\n      \"city\": \"Tampa\",\n      \"state\": \"Florida\",\n      \"postalCode\": \"33620\"\n    },\n    {\n      \"email\": \"tgoldstone15@mit.edu\",\n      \"firstName\": \"Toby\",\n      \"lastName\": \"Goldstone\",\n      \"title\": \"Geologist II\",\n      \"company\": \"Orn-Terry\",\n      \"phone\": \"2023950326\",\n      \"leadStatus\": \"Red\",\n      \"leadScore\": 92,\n      \"leadSource\": \"Debutantes, Los\",\n      \"address\": \"63383 Stang Crossing\",\n      \"city\": \"Washington\",\n      \"state\": \"District of Columbia\",\n      \"postalCode\": \"20057\"\n    },\n    {\n      \"email\": \"llambrook16@issuu.com\",\n      \"firstName\": \"Lyndsay\",\n      \"lastName\": \"Lambrook\",\n      \"title\": \"Marketing Manager\",\n      \"company\": \"Kuphal, Smitham and Mills\",\n      \"phone\": \"3055203651\",\n      \"leadStatus\": \"Goldenrod\",\n      \"leadScore\": 61,\n      \"leadSource\": \"Kopps\",\n      \"address\": \"58690 Schurz Alley\",\n      \"city\": \"Naples\",\n      \"state\": \"Florida\",\n      \"postalCode\": \"33961\"\n    },\n    {\n      \"email\": \"ttruesdale17@wikimedia.org\",\n      \"firstName\": \"Thorin\",\n      \"lastName\": \"Truesdale\",\n      \"title\": \"Senior Financial Analyst\",\n      \"company\": \"Hoeger, Casper and Bayer\",\n      \"phone\": \"9528233297\",\n      \"leadStatus\": \"Yellow\",\n      \"leadScore\": 86,\n      \"leadSource\": \"Memories of Matsuko (Kiraware Matsuko no isshô)\",\n      \"address\": \"9 Farragut Street\",\n      \"city\": \"Young America\",\n      \"state\": \"Minnesota\",\n      \"postalCode\": \"55557\"\n    },\n    {\n      \"email\": \"fpaula18@bandcamp.com\",\n      \"firstName\": \"Francis\",\n      \"lastName\": \"Paula\",\n      \"title\": \"Sales Associate\",\n      \"company\": \"Gutmann and Sons\",\n      \"phone\": \"2127757097\",\n      \"leadStatus\": \"Blue\",\n      \"leadScore\": 44,\n      \"leadSource\": \"Bohemian Life, The (La vie de bohème)\",\n      \"address\": \"3089 Crescent Oaks Circle\",\n      \"city\": \"New York City\",\n      \"state\": \"New York\",\n      \"postalCode\": \"10079\"\n    },\n    {\n      \"email\": \"wmenlow19@github.io\",\n      \"firstName\": \"Willy\",\n      \"lastName\": \"Menlow\",\n      \"title\": \"VP Marketing\",\n      \"company\": \"Bosco, Koch and Abernathy\",\n      \"phone\": \"5172085133\",\n      \"leadStatus\": \"Purple\",\n      \"leadScore\": 12,\n      \"leadSource\": \"Morning Glory\",\n      \"address\": \"20234 Colorado Parkway\",\n      \"city\": \"Lansing\",\n      \"state\": \"Michigan\",\n      \"postalCode\": \"48901\"\n    },\n    {\n      \"email\": \"abelly1a@npr.org\",\n      \"firstName\": \"Ardella\",\n      \"lastName\": \"Belly\",\n      \"title\": \"Accounting Assistant I\",\n      \"company\": \"Weimann Group\",\n      \"phone\": \"7145934835\",\n      \"leadStatus\": \"Pink\",\n      \"leadScore\": 96,\n      \"leadSource\": \"Mortal Thoughts\",\n      \"address\": \"5 Village Green Pass\",\n      \"city\": \"Garden Grove\",\n      \"state\": \"California\",\n      \"postalCode\": \"92645\"\n    },\n    {\n      \"email\": \"fcalcott1b@thetimes.co.uk\",\n      \"firstName\": \"Ferdie\",\n      \"lastName\": \"Calcott\",\n      \"title\": \"Help Desk Operator\",\n      \"company\": \"Bayer LLC\",\n      \"phone\": \"4022091032\",\n      \"leadStatus\": \"Crimson\",\n      \"leadScore\": 63,\n      \"leadSource\": \"Passing Fancy (Dekigokoro)\",\n      \"address\": \"45395 Toban Pass\",\n      \"city\": \"Omaha\",\n      \"state\": \"Nebraska\",\n      \"postalCode\": \"68134\"\n    },\n    {\n      \"email\": \"tkemwall1c@virginia.edu\",\n      \"firstName\": \"Tessie\",\n      \"lastName\": \"Kemwall\",\n      \"title\": \"Geologist III\",\n      \"company\": \"Kshlerin, Purdy and Leuschke\",\n      \"phone\": \"7726512928\",\n      \"leadStatus\": \"Maroon\",\n      \"leadScore\": 23,\n      \"leadSource\": \"Supernova\",\n      \"address\": \"6737 Prairie Rose Court\",\n      \"city\": \"Fort Pierce\",\n      \"state\": \"Florida\",\n      \"postalCode\": \"34949\"\n    },\n    {\n      \"email\": \"twooderson1d@privacy.gov.au\",\n      \"firstName\": \"Thaxter\",\n      \"lastName\": \"Wooderson\",\n      \"title\": \"Database Administrator IV\",\n      \"company\": \"Miller Inc\",\n      \"phone\": \"4045879758\",\n      \"leadStatus\": \"Violet\",\n      \"leadScore\": 64,\n      \"leadSource\": \"Beyond the Border\",\n      \"address\": \"1 Monument Point\",\n      \"city\": \"Atlanta\",\n      \"state\": \"Georgia\",\n      \"postalCode\": \"30340\"\n    }\n  ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads.json",
+									"protocol": "https",
+									"host": [
+										"{{munchkin_id}}",
+										"mktorest",
+										"com"
+									],
+									"path": [
+										"rest",
+										"v1",
+										"leads.json"
+									]
+								},
+								"description": "Get a lead by a specific filter type"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Step 3: Create and send email",
+					"item": [
+						{
+							"name": "Get default folder id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var data = JSON.parse(responseBody);",
+											"pm.environment.set(\"default_folder_id\", data.result[0].folderId.id);"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{access_token}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/folder/byName.json?name=Default",
+									"protocol": "https",
+									"host": [
+										"{{munchkin_id}}",
+										"mktorest",
+										"com"
+									],
+									"path": [
+										"rest",
+										"asset",
+										"v1",
+										"folder",
+										"byName.json"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "Default"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create \"Getting Started\" folder",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"type": "text",
+										"value": "application/x-www-form-urlencoded"
+									},
+									{
+										"key": "Authorization",
+										"type": "text",
+										"value": "Bearer {{access_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "parent={\"id\":38,\"type\":\"Folder\"}&name=Getting Started3&description=The first email folder created via API from the Marketo Postman collection made available for Adobe Exchange partners.",
+									"options": {
+										"raw": {
+											"language": "text"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/folders.json",
+									"protocol": "https",
+									"host": [
+										"{{munchkin_id}}",
+										"mktorest",
+										"com"
+									],
+									"path": [
+										"rest",
+										"asset",
+										"v1",
+										"folders.json"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Create an access token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"access_token\", data.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/identity/oauth/token?grant_type=client_credentials&client_id={{client_id}}&client_secret={{client_secret}}",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"identity",
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "grant_type",
+									"value": "client_credentials"
+								},
+								{
+									"key": "client_id",
+									"value": "{{client_id}}",
+									"description": "found in Admin > LaunchPoint"
+								},
+								{
+									"key": "client_secret",
+									"value": "{{client_secret}}",
+									"description": "found in Admin > LaunchPoint"
+								}
+							]
+						},
+						"description": "Access token used to work with the Marketo REST API. Generally a token expires after 1 hour"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Get leads",
+			"item": [
+				{
+					"name": "Describe Leads",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads/describe.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"leads",
+								"describe.json"
+							]
+						},
+						"description": "Get a lead by a specific filter type"
+					},
+					"response": []
+				},
+				{
+					"name": "Describe2 Leads",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads/describe2.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"leads",
+								"describe2.json"
+							]
+						},
+						"description": "Get a lead by a specific filter type"
+					},
+					"response": []
+				},
+				{
+					"name": "Get leads by email",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads.json?filterType=email&filterValues=epeterse%2Btest4%40adobetest.com&fields=email,firstName,ericCFPerson",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"leads.json"
+							],
+							"query": [
+								{
+									"key": "filterType",
+									"value": "email"
+								},
+								{
+									"key": "filterValues",
+									"value": "epeterse%2Btest4%40adobetest.com"
+								},
+								{
+									"key": "fields",
+									"value": "email,firstName,ericCFPerson"
+								}
+							]
+						},
+						"description": "Get a lead by a specific filter type"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create leads",
+			"item": [
+				{
+					"name": "Create a lead",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \n   \"action\":\"createOnly\",\n   \"lookupField\":\"email\",\n   \"input\":[  \n      {  \n         \"email\":\"epeterse+test4@adobetest.com\",\n         \"firstName\":\"Eric\",\n         \"lastName\":\"Petersen\"\n         \"postalCode\":\"84043\",\n         \"ericForeignID\":\"this is the best id ever\"\n      }\n\n   ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"leads.json"
+							]
+						},
+						"description": "Get a lead by a specific filter type"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lead administration",
+			"item": [
+				{
+					"name": "Get lead searchable fields",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads/describe2.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"leads",
+								"describe2.json"
+							]
+						},
+						"description": "Returns list of searchable fields on lead objects in the target instance."
+					},
+					"response": []
+				},
+				{
+					"name": "Get lead database fields",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads/describe.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"leads",
+								"describe.json"
+							]
+						},
+						"description": "Returns metadata about lead objects in the target instance, including a list of all fields available for interaction via the APIs. "
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Emails",
+			"item": [
+				{
+					"name": "Get Email Folders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/folder/byName.json?name=Eric - Learning",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"folder",
+								"byName.json"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Eric - Learning"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Email Folders by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/folder/32.json?type=Folder",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"folder",
+								"32.json"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "Folder"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Email Folders Bulk",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/folders.json?root{\"id\":3,\"type:\"Folder\"}",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"folders.json"
+							],
+							"query": [
+								{
+									"key": "root{\"id\":3,\"type:\"Folder\"}",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Emails",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/emails.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"emails.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Email Full Content",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/email/1003/fullContent.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"email",
+								"1003",
+								"fullContent.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Spanish Email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "name=Join the party - sp&folder={\"id\":67,\"type\":\"Folder\"}&template=1031&description=Únete a la fiesta&subject=¿Quién quiere ir de fiesta?&fromName=SomeBody&fromEmail=somebody@marketo.com&replyEmail=somebody@marketo.com",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/emails.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"emails.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Spanish Email Content IDs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/email/1004/content.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"email",
+								"1004",
+								"content.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Spanish Email Text",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "type=Text&value=Oye mira, envía un mensaje de texto.<br /> <br />Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum officiis dolorum, nulla, mollitia ducimus iure modi perferendis tenetur ea illum veniam aut sapiente deserunt repellendus. Excepturi illo numquam sint harum.",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/email/1002/content/text.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"email",
+								"1002",
+								"content",
+								"text.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Spanish Email Full Content",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/email/1002/fullContent.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"email",
+								"1002",
+								"fullContent.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Email Templates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/emailTemplates.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"emailTemplates.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Database",
+			"item": [
+				{
+					"name": "Get Lead Fields",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads/describe.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"leads",
+								"describe.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Named Accounts Fields",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/namedaccounts/describe.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"namedaccounts",
+								"describe.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Program Member",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/program/members/describe.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"program",
+								"members",
+								"describe.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Activities",
+			"item": [
+				{
+					"name": "Get Custom Activity",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							},
+							{
+								"key": "Authorization",
+								"type": "text",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/leads/describe.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"leads",
+								"describe.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bulk Activities Extract",
+			"item": [
+				{
+					"name": "Get Activity Types",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/v1/activities/types.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"v1",
+								"activities",
+								"types.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n   \"format\": \"CSV\",\n   \"filter\": { \n      \"createdAt\": { \n         \"startAt\": \"2021-02-01T23:59:59-00:00\",\n         \"endAt\": \"2021-02-28T23:59:59-00:00\"\n      },\n      \"activityTypeIds\": [ \n         1,\n         12,\n         13\n      ]\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/activities/export/create.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"activities",
+								"export",
+								"create.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Queue Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/activities/export/30dde3a1-207d-4948-839b-d2603eac0d2b/enqueue.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"activities",
+								"export",
+								"30dde3a1-207d-4948-839b-d2603eac0d2b",
+								"enqueue.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com//bulk/v1/activities/export/30dde3a1-207d-4948-839b-d2603eac0d2b/status.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"",
+								"bulk",
+								"v1",
+								"activities",
+								"export",
+								"30dde3a1-207d-4948-839b-d2603eac0d2b",
+								"status.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Data File",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/activities/export/74af25b8-3696-4d8b-8803-8ebb67c13c39/file.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"activities",
+								"export",
+								"74af25b8-3696-4d8b-8803-8ebb67c13c39",
+								"file.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/activities/export/74af25b8-3696-4d8b-8803-8ebb67c13c39/cancel.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"activities",
+								"export",
+								"74af25b8-3696-4d8b-8803-8ebb67c13c39",
+								"cancel.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lists",
+			"item": [
+				{
+					"name": "Get Smart Lists",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/smartLists.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"smartLists.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Smart List by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/smartList/2137.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"smartList",
+								"2137.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Smart List by name",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							},
+							{
+								"key": "",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/smartList/byName.json?name=Eric's Random Test Smart List",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"smartList",
+								"byName.json"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Eric's Random Test Smart List"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Smart List by ID Copy",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/rest/asset/v1/smartList/2118.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"rest",
+								"asset",
+								"v1",
+								"smartList",
+								"2118.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bulk Leads Extract with Smart ID",
+			"item": [
+				{
+					"name": "Create Job",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"exportId\", jsonData.result[0].exportId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n   \"fields\": [\n      \"firstName\",\n      \"lastName\",\n      \"id\",\n      \"email\"\n   ],\n   \"format\": \"CSV\",\n   \"columnHeaderNames\": {\n      \"firstName\": \"First Name\",\n      \"lastName\": \"Last Name\",\n      \"id\": \"Marketo Id\",\n      \"email\": \"Email Address\"\n   },\n   \"filter\": {\n      \"createdAt\": {\n         \"startAt\": \"2021-02-01T00:00:00Z\",\n         \"endAt\": \"2021-02-28T00:00:00Z\",\n         \"smartListId\": 2137\n      }\n   }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/leads/export/create.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"leads",
+								"export",
+								"create.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Queue Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/leads/export/{{exportId}}/enqueue.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"leads",
+								"export",
+								"{{exportId}}",
+								"enqueue.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/leads/export/{{exportId}}/status.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"leads",
+								"export",
+								"{{exportId}}",
+								"status.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve Data File",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/leads/export/{{exportId}}/file.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"leads",
+								"export",
+								"{{exportId}}",
+								"file.json"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Job",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://{{munchkin_id}}.mktorest.com/bulk/v1/activities/export/{{exportId}}/enqueue.json",
+							"protocol": "https",
+							"host": [
+								"{{munchkin_id}}",
+								"mktorest",
+								"com"
+							],
+							"path": [
+								"bulk",
+								"v1",
+								"activities",
+								"export",
+								"{{exportId}}",
+								"enqueue.json"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

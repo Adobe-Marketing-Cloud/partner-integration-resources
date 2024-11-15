@@ -1,0 +1,1198 @@
+{
+	"info": {
+		"_postman_id": "0951a456-7fee-444a-be3d-6de38836d587",
+		"name": "Create a Streaming Source",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25920785"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Access Token - OAuth2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"ACCESS_TOKEN\", data.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_secret",
+									"value": "{{CLIENT_SECRET}}",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "{{SCOPES}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{IMS}}/ims/token/v3?client_id={{API_KEY}}",
+							"protocol": "https",
+							"host": [
+								"{{IMS}}"
+							],
+							"path": [
+								"ims",
+								"token",
+								"v3"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "{{API_KEY}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sandbox setup",
+			"item": [
+				{
+					"name": "Schema: Create PROFILE Schema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"SCHEMA_ID_PROFILE\", data[\"$id\"]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if(! pm.environment.get(\"UNIQUE_ID\") )",
+									"    pm.environment.set(\"UNIQUE_ID\", \"\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"object\",\n    \"title\": \"{{UNIQUE_NAME}} Sources Test - Profiles\",\n    \"description\": \"Profile data for {{UNIQUE_NAME}} Source Testing\",\n    \"allOf\": [\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/identitymap\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-person-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-personal-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-segmentation\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-preferences-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-work-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-directmarketing\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-subscriptions\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-test-profile\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-push-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-owning-entities\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-privacy\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/mixins/profile-consents\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/mixins/profile/profile-user-account-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                }\n            ],\n    \"meta:immutableTags\": [\n        \"union\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/schemas/",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"tenant",
+								"schemas",
+								""
+							]
+						},
+						"description": "Create a Schema for importing Loyalty data into the profile.\n\nComponents:\n - XDM Individual Profile (class)\n - Profile person details (mixin; adobe)\n - Profile personal details (mixin; adobe)\n - Loyalty details (mixin; partner)"
+					},
+					"response": []
+				},
+				{
+					"name": "Schema: get stats & set TENANT_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"TENANT_ID\", data.tenantId);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/stats",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity for Schema",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"@type\":\"xdm:descriptorIdentity\",\r\n    \"xdm:sourceProperty\":\"/personalEmail/address\",\r\n    \"xdm:property\":\"xdm:code\",\r\n    \"xdm:isPrimary\":true,\r\n    \"xdm:namespace\":\"Email\",\r\n    \"xdm:sourceSchema\":\"{{SCHEMA_ID_PROFILE}}\",\r\n    \"xdm:sourceVersion\":1\r\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/descriptors",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"tenant",
+								"descriptors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DataSet: Create Dataset for Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"var dsId = data[0];",
+									"if(dsId.indexOf(\"@/dataSets/\") === 0)",
+									"    dsId = dsId.substring(11)",
+									"pm.environment.set(\"DATASET_ID_PROFILE\", dsId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{UNIQUE_NAME}} Sources Test Profiles\",\n    \"description\": \"Profile data for {{UNIQUE_NAME}} Sources\",\n    \"schemaRef\": {\n        \"id\": \"{{SCHEMA_ID_PROFILE}}\",\n        \"contentType\": \"application/vnd.adobe.xed-full+json;version=1\"\n    },\n    \"fileDescription\": {\n        \"persisted\": true,\n        \"containerFormat\": \"parquet\",\n        \"format\": \"parquet\"\n    },\n    \"tags\": {\n        \"unifiedIdentity\": [\"enabled:true\"],\n        \"unifiedProfile\": [\"enabled:true\"]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/catalog/datasets",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"catalog",
+								"datasets"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Source configs",
+			"item": [
+				{
+					"name": "Create Connection Spec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"var csID = data.id;",
+									"pm.environment.set(\"CONNECTION_SPEC_ID\", csID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n     \"type\": \"generic-streaming\",\n    \"providerId\": \"521eee4d-8cbe-4906-bb48-fb6bd4450033\",\n    \"version\": \"1.0\",\n    \"attributes\": {\n        \"category\": \"Streaming\",\n        \"isSource\": true,\n        \"documentationLink\": \"https://docs.adobe.com/content/help/en/platform-learn/tutorials/data-ingestion/understanding-streaming-ingestion.html\",\n        \"uiAttributes\": {\n            \"apiFeatures\": {\n                \"updateSupported\": false\n            }\n        }\n    },\n    \"authSpec\": [],\n    \"name\": \"generic-streaming\",\n    \"permissionsInfo\": {\n        \"view\": [\n            {\n                \"name\": \"StreamingSource\",\n                \"@type\": \"lowLevel\",\n                \"permissions\": [\n                    \"read\"\n                ]\n            }\n        ],\n        \"manage\": [\n            {\n                \"name\": \"StreamingSource\",\n                \"@type\": \"lowLevel\",\n                \"permissions\": [\n                    \"write\"\n                ]\n            }\n        ]\n    },\n    \"sourceSpec\": {\n        \"attributes\": {\n            \"uiAttributes\": {\n                \"documentationLink\": \"http://www.adobe.com/go/understanding-data-streaming-ingestion-en\",\n                \"isSource\": true,\n                \"monitoringSupported\": false,\n                \"category\": {\n                    \"key\": \"streaming\"\n                },\n                \"icon\": {\n                    \"key\": \"Generic-Streaming\"\n                },\n                \"description\": {\n                    \"text\": \"Generic Streaming Connector - {{UNIQUE_NAME}}\"\n                },\n                \"label\": {\n                    \"text\": \"{{UNIQUE_NAME}}\"\n                },\n                \"frequency\": {\n                    \"text\": \"streaming\"\n                }\n            }\n        }\n    },\n    \"exploreSpec\": {\n        \"type\": \"StreamingConnection\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connectionSpecs",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"flowservice",
+								"connectionSpecs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Flow Specification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/flowSpecs/e77fde5a-22a8-11ed-861d-0242ac120002",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"flowservice",
+								"flowSpecs",
+								"e77fde5a-22a8-11ed-861d-0242ac120002"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Flow Specification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n      \"id\": \"e77fde5a-22a8-11ed-861d-0242ac120002\",\n      \"name\": \"GenericStreamingAEP\",\n      \"providerId\": \"521eee4d-8cbe-4906-bb48-fb6bd4450033\",\n      \"version\": \"1.0\",\n      \"sourceConnectionSpecIds\": [\n          << CONNECTION SPEC IDS GO HERE >>}\n      ],\n      \"targetConnectionSpecIds\": [\n          \"c604ff05-7f1a-43c0-8e18-33bf874cb11c\"\n      ],\n      \"optionSpec\": {\n          \"name\": \"OptionSpec\",\n          \"spec\": {\n              \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n              \"type\": \"object\",\n              \"properties\": {\n                  \"errorDiagnosticsEnabled\": {\n                      \"title\": \"Error diagnostics.\",\n                      \"description\": \"Flag to enable detailed and sample error diagnostics summary.\",\n                      \"type\": \"boolean\",\n                      \"default\": false\n                  },\n                  \"partialIngestionPercent\": {\n                      \"title\": \"Partial ingestion threshold.\",\n                      \"description\": \"Percentage which defines the threshold of errors allowed before the run is marked as failed.\",\n                      \"type\": \"number\",\n                      \"exclusiveMinimum\": 0\n                  },\n                  \"inletUrl\": {\n                      \"title\": \"Inlet Url.\",\n                      \"description\": \"Inlet Url which defines the streaming endpoint.\",\n                      \"type\": \"string\"\n                  }\n              }\n          }\n      },\n      \"transformationSpecs\": [\n          {\n              \"name\": \"Mapping\",\n              \"spec\": {\n                  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n                  \"type\": \"object\",\n                  \"description\": \"defines various params required for different mapping from source to target\",\n                  \"properties\": {\n                      \"mappingId\": {\n                          \"type\": \"string\"\n                      },\n                      \"mappingVersion\": {\n                          \"type\": \"string\"\n                      }\n                  }\n              }\n          }\n      ],\n      \"attributes\": {\n          \"isSourceFlow\": true,\n          \"flacValidationSupported\": true,\n          \"frequency\": \"streaming\",\n          \"uiAttributes\": {\n              \"apiFeatures\": {\n                  \"updateSupported\": true,\n                  \"flowRunsSupported\": true\n              }\n          }\n      },\n      \"permissionsInfo\": {\n          \"view\": [\n              {\n                  \"@type\": \"lowLevel\",\n                  \"name\": \"StreamingSource\",\n                  \"permissions\": [\n                      \"read\"\n                  ]\n              }\n          ],\n          \"manage\": [\n              {\n                  \"@type\": \"lowLevel\",\n                  \"name\": \"StreamingSource\",\n                  \"permissions\": [\n                      \"write\"\n                  ]\n              }\n          ]\n      }\n  }"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/flowSpecs/e77fde5a-22a8-11ed-861d-0242ac120002",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"flowservice",
+								"flowSpecs",
+								"e77fde5a-22a8-11ed-861d-0242ac120002"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "End-to-end testing",
+			"item": [
+				{
+					"name": "Import: Stream to PROFILE DataSet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							},
+							{
+								"key": "x-adobe-flow-id",
+								"value": "",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n  {\n    \"person\": {\n      \"name\": {\n        \"lastName\": \"Moe\",\n        \"firstName\": \"Zarah\",\n        \"courtesyTitle\": \"Ms\",\n        \"suffix\": \"II\"\n      },\n      \"birthDate\": \"1940-08-10\",\n      \"gender\": \"female\",\n      \"nationality\": \"FR\"\n    },\n    \"personalEmail\": {\n      \"address\": \"zarah.moe@example.com\",\n      \"label\": \"email\",\n      \"primary\": \"true\",\n      \"type\": \"email\"\n    }\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://dcs.adobedc.net/collection/...",
+							"protocol": "https",
+							"host": [
+								"dcs",
+								"adobedc",
+								"net"
+							],
+							"path": [
+								"collection",
+								"..."
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Supplemental calls",
+			"item": [
+				{
+					"name": "Sandbox setup",
+					"item": [
+						{
+							"name": "Schema Lookup",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.adobe.xed+json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/schemas",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"schemaregistry",
+										"tenant",
+										"schemas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Segment  job",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.adobe.xed+json",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n        {\n            \"segmentId\": \"0b37b758-4a9f-441b-ba1a-0717b5e3be4f\"\n        }\n    ]"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/ups/segment/jobs/",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"ups",
+										"segment",
+										"jobs",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Segment Definition Lookup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.adobe.xed+json",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Jake Test Profiles\",\n    \"description\": \"Profile data for Jake Testing\",\n    \"schemaRef\": {\n        \"id\": \"{{SCHEMA_ID_PROFILE}}\",\n        \"contentType\": \"application/vnd.adobe.xed-full+json;version=1\"\n    },\n    \"fileDescription\": {\n        \"persisted\": true,\n        \"containerFormat\": \"parquet\",\n        \"format\": \"parquet\"\n    },\n    \"tags\": {\n        \"unifiedIdentity\": [\"enabled:true\"],\n        \"unifiedProfile\": [\"enabled:true\"]\n    }\n}"
+								},
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/core/ups/segment/definitions",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"core",
+										"ups",
+										"segment",
+										"definitions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Base Connections Lookup",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connections",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"flowservice",
+										"connections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Source Connection Lookup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"name\": \"Jake's Testing Streaming Source Connection\",\r\n      \"description\": \"A streaming source connection for Jake's Testing\",\r\n      \"baseConnectionId\": \"{{BASE_CONNECTION_ID}}\",\r\n      \"connectionSpec\": {\r\n          \"id\": \"bc7b00d6-623a-4dfc-9fdb-f1240aeadaeb\",\r\n          \"version\": \"1.0\"\r\n      }\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/sourceConnections",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"flowservice",
+										"sourceConnections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Target Connection Lookup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"name\": \"Jake's Streaming Target Connection\",\r\n      \"description\": \"Jake's Streaming Target Connection\",\r\n      \"data\": {\r\n          \"schema\": {\r\n              \"id\": \"{{SCHEMA_ID_PROFILE}}\",\r\n              \"version\": \"application/vnd.adobe.xed-full+json;version=1.0\"\r\n          }\r\n      },\r\n      \"params\": {\r\n          \"dataSetId\": \"{{DATASET_ID_PROFILE}}\"\r\n      },\r\n          \"connectionSpec\": {\r\n          \"id\": \"c604ff05-7f1a-43c0-8e18-33bf874cb11c\",\r\n          \"version\": \"1.0\"\r\n      }\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/targetConnections",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"flowservice",
+										"targetConnections"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Queries",
+					"item": [
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/foundation/query/queries?limit=1",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"query",
+										"queries"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Request Copy",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/foundation/query/queries",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"query",
+										"queries"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Delete Connection Spec",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connectionSpecs/1fb9fcf9-0758-44af-a39b-8f087a104e5d",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"flowservice",
+								"connectionSpecs",
+								"1fb9fcf9-0758-44af-a39b-8f087a104e5d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
