@@ -1,0 +1,3006 @@
+{
+	"info": {
+		"_postman_id": "b0763d0f-2907-4639-89bc-a6d861777750",
+		"name": "Create a Streaming Destination",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "25920785"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Get Access Token - OAuth2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"ACCESS_TOKEN\", data.access_token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_secret",
+									"value": "{{CLIENT_SECRET}}",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "{{SCOPES}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://{{IMS}}/ims/token/v3?client_id={{API_KEY}}",
+							"protocol": "https",
+							"host": [
+								"{{IMS}}"
+							],
+							"path": [
+								"ims",
+								"token",
+								"v3"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "{{API_KEY}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Sandbox setup",
+			"item": [
+				{
+					"name": "Schema: Create PROFILE Schema",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"SCHEMA_ID_PROFILE\", data[\"$id\"]);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"if(! pm.environment.get(\"UNIQUE_ID\") )",
+									"    pm.environment.set(\"UNIQUE_ID\", \"\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"object\",\n    \"title\": \"{{UNIQUE_NAME}} Test - Profiles\",\n    \"description\": \"Profile data for {{UNIQUE_NAME}} Testing\",\n    \"allOf\": [\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/identitymap\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-person-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-personal-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-segmentation\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-preferences-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-work-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-directmarketing\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-subscriptions\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-test-profile\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-push-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-owning-entities\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/context/profile-privacy\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/mixins/profile-consents\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                },\n                {\n                    \"$ref\": \"https://ns.adobe.com/xdm/mixins/profile/profile-user-account-details\",\n                    \"type\": \"object\",\n                    \"meta:xdmType\": \"object\"\n                }\n            ],\n    \"meta:immutableTags\": [\n        \"union\"\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/schemas/",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"tenant",
+								"schemas",
+								""
+							]
+						},
+						"description": "Create a Schema for importing Loyalty data into the profile.\n\nComponents:\n - XDM Individual Profile (class)\n - Profile person details (mixin; adobe)\n - Profile personal details (mixin; adobe)\n - Loyalty details (mixin; partner)"
+					},
+					"response": []
+				},
+				{
+					"name": "Schema: get stats & set TENANT_ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"pm.environment.set(\"TENANT_ID\", data.tenantId);",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/stats",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Identity for Schema",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"@type\":\"xdm:descriptorIdentity\",\r\n    \"xdm:sourceProperty\":\"/personalEmail/address\",\r\n    \"xdm:property\":\"xdm:code\",\r\n    \"xdm:isPrimary\":true,\r\n    \"xdm:namespace\":\"Email\",\r\n    \"xdm:sourceSchema\":\"{{SCHEMA_ID_PROFILE}}\",\r\n    \"xdm:sourceVersion\":1\r\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/descriptors",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"schemaregistry",
+								"tenant",
+								"descriptors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DataSet: Create Dataset for Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);",
+									"var dsId = data[0];",
+									"if(dsId.indexOf(\"@/dataSets/\") === 0)",
+									"    dsId = dsId.substring(11)",
+									"pm.environment.set(\"DATASET_ID_PROFILE\", dsId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{UNIQUE_NAME}} Test Profiles\",\n    \"description\": \"Profile data for {{UNIQUE_NAME}}\",\n    \"schemaRef\": {\n        \"id\": \"{{SCHEMA_ID_PROFILE}}\",\n        \"contentType\": \"application/vnd.adobe.xed-full+json;version=1\"\n    },\n    \"fileDescription\": {\n        \"persisted\": true,\n        \"containerFormat\": \"parquet\",\n        \"format\": \"parquet\"\n    },\n    \"tags\": {\n        \"unifiedIdentity\": [\"enabled:true\"],\n        \"unifiedProfile\": [\"enabled:true\"]\n    }\n}"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/catalog/datasets",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"catalog",
+								"datasets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Segment: Create Segment Definition",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}",
+								"type": "text"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}",
+								"type": "text"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}",
+								"type": "text"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"name\": \"{{UNIQUE_NAME}} - First Name Exists\",\n        \"profileInstanceId\": \"ups\",\n        \"description\": \"First name Exists\",\n        \"expression\": {\n            \"type\": \"PQL\",\n            \"format\": \"pql/text\",\n            \"value\": \"person.name.firstName.isNotNull()\"\n        },\n        \"evaluationInfo\": {\n            \"batch\": {\n                \"enabled\": false\n            },\n            \"continuous\": {\n                \"enabled\": true\n            },\n            \"synchronous\": {\n                \"enabled\": false\n            }\n        },\n        \"schema\": {\n            \"name\": \"_xdm.context.profile\"\n        },\n        \"payloadSchema\": \"string\",\n        \"ttlInDays\": 60\n    }"
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/core/ups/segment/definitions",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"core",
+								"ups",
+								"segment",
+								"definitions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Base Connection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"BASE_CONNECTION_ID\", data.id);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{UNIQUE_NAME}} Streaming Connection XDM Data\",\r\n    \"description\": \"{{UNIQUE_NAME}} streaming connection for customer data\",\r\n    \"connectionSpec\": {\r\n        \"id\": \"bc7b00d6-623a-4dfc-9fdb-f1240aeadaeb\",\r\n        \"version\": \"1.0\"\r\n    },\r\n    \"auth\": {\r\n      \"specName\": \"Streaming Connection\",\r\n      \"params\": {\r\n        \"dataType\": \"xdm\"\r\n      }\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connections",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"flowservice",
+								"connections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Source Connection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"SOURCE_CONNECTION_ID\", data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"name\": \"{{UNIQUE_NAME}} Streaming Source Connection\",\r\n      \"description\": \"A streaming source connection for demo\",\r\n      \"baseConnectionId\": \"{{BASE_CONNECTION_ID}}\",\r\n      \"connectionSpec\": {\r\n          \"id\": \"bc7b00d6-623a-4dfc-9fdb-f1240aeadaeb\",\r\n          \"version\": \"1.0\"\r\n      }\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/sourceConnections",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"flowservice",
+								"sourceConnections"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Source URL Lookup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"INLET_URL\", data.items[0].auth.params.inletUrl);\r",
+									"pm.environment.set(\"INLET_SOURCE_ID\", data.items[0].auth.params.inletId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/vnd.adobe.xed+json",
+								"disabled": true
+							},
+							{
+								"key": "Content-Type",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connections/{{BASE_CONNECTION_ID}}",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"flowservice",
+								"connections",
+								"{{BASE_CONNECTION_ID}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Target Connection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = JSON.parse(responseBody);\r",
+									"pm.environment.set(\"TARGET_CONNECTION_ID\", data.id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer {{ACCESS_TOKEN}}"
+							},
+							{
+								"key": "x-api-key",
+								"value": "{{API_KEY}}"
+							},
+							{
+								"key": "x-gw-ims-org-id",
+								"value": "{{IMS_ORG}}"
+							},
+							{
+								"key": "x-sandbox-name",
+								"value": "{{SANDBOX_NAME}}"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n      \"name\": \"{{UNIQUE_NAME}} Streaming Target Connection\",\r\n      \"description\": \"{{UNIQUE_NAME}} Streaming Target Connection\",\r\n      \"data\": {\r\n          \"schema\": {\r\n              \"id\": \"{{SCHEMA_ID_PROFILE}}\",\r\n              \"version\": \"application/vnd.adobe.xed-full+json;version=1.0\"\r\n          }\r\n      },\r\n      \"params\": {\r\n          \"dataSetId\": \"{{DATASET_ID_PROFILE}}\"\r\n      },\r\n          \"connectionSpec\": {\r\n          \"id\": \"c604ff05-7f1a-43c0-8e18-33bf874cb11c\",\r\n          \"version\": \"1.0\"\r\n      }\r\n  }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/targetConnections",
+							"host": [
+								"{{PLATFORM_GATEWAY}}"
+							],
+							"path": [
+								"data",
+								"foundation",
+								"flowservice",
+								"targetConnections"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create Destination configs",
+			"item": [
+				{
+					"name": "Server Template Configs",
+					"item": [
+						{
+							"name": "Create a Destination Server Template",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n            \"name\": \" {{UNIQUE_NAME}}  ExchangePartner_DestinationSDK\",\r\n            \"destinationServerType\": \"URL_BASED\",\r\n            \"urlBasedDestination\": {\r\n                \"url\": {\r\n                    \"templatingStrategy\": \"PEBBLE_V1\",\r\n                    \"value\": \"https://webhook.site/???\"\r\n                },\r\n                \"splitUserById\": false\r\n            },\r\n            \"httpTemplate\": {\r\n                \"requestBody\": {\r\n                    \"templatingStrategy\": \"PEBBLE_V1\",\r\n                   \r\n                   \"value\": \"{% for profile in input.profiles %}{{profile|raw}}{% endfor %}\"\r\n                },\r\n                \"httpMethod\": \"POST\",\r\n                \"contentType\": \"application/json\",\r\n                \"headers\": [\r\n                    {\r\n                        \"header\": \"sample-header-requested-by-your-endpoint\",\r\n                        \"value\": {\r\n                            \"templatingStrategy\": \"PEBBLE_V1\",\r\n                            \"value\": \"test header\"\r\n                        }\r\n                    }\r\n                ]\r\n            },\r\n            \"qos\": {\r\n                \"name\": \"freeform\"\r\n            }\r\n        }"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destination-servers",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destination-servers"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Destination Configs",
+					"item": [
+						{
+							"name": "Create a Destination Config",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"???\",\r\n  \"description\": \"This is a Destination connector created using the Destination SDK.\",\r\n  \"status\": \"TEST\",\r\n  \"customerAuthenticationConfigurations\": [\r\n    {\r\n      \"authType\": \"BEARER\"\r\n\r\n    }\r\n  ],\r\n  \"customerDataFields\": [\r\n    {\r\n      \"name\": \"endpointsInstance\",\r\n      \"type\": \"string\",\r\n      \"title\": \"Select endpoint\",\r\n      \"description\": \"This is a customer data field.\",\r\n      \"isRequired\": true,\r\n      \"default\": {},\r\n      \"enum\": [\r\n        \"US\",\r\n        \"EU\",\r\n        \"APAC\",\r\n        \"NZ\"\r\n      ]\r\n      },\r\n        {\r\n         \"name\":\"customerID\",\r\n         \"type\":\"string\",\r\n         \"title\":\"Exchange Partner ID\",\r\n         \"description\":\"This is a customer data field.\",\r\n         \"isRequired\":true,\r\n         \"pattern\":\"^[A-Za-z]+$\"\r\n      }\r\n  ],\r\n  \"uiAttributes\": {\r\n    \"documentationLink\": \"https://www.adobe.com/go/destinations-moviestar-en\",\r\n    \"category\": \"mobile\",\r\n    \"connectionType\": \"Server-to-server\",\r\n    \"frequency\": \"Streaming\",\r\n    \"monitoringSupported\":true,\r\n    \"flowRunsSupported\":true\r\n\r\n  },\r\n   \"identityNamespaces\":{\r\n      \"external_id\":{\r\n         \"acceptsAttributes\":true,\r\n         \"acceptsCustomNamespaces\":true,\r\n         \"acceptedGlobalNamespaces\":{\r\n            \"Email\":{\r\n\r\n \r\n\r\n            }\r\n         }\r\n      },\r\n      \"another_id\":{\r\n         \"acceptsAttributes\":true,\r\n         \"acceptsCustomNamespaces\":true\r\n      }\r\n\r\n \r\n\r\n  },\r\n  \"destinationDelivery\": [\r\n    {\r\n      \"authenticationRule\": \"CUSTOMER_AUTHENTICATION\",\r\n      \"authenticationId\": \"string\",\r\n      \"destinationServerId\": \"???\"\r\n    }\r\n  ],\r\n  \"schemaConfig\": {\r\n\r\n    \"profileFields\": [\r\n      {\r\n        \"name\": \"firstName\",\r\n        \"type\": \"string\",\r\n        \"title\": \"First Name\",\r\n        \"description\": \"first Name\",\r\n        \"isRequired\": false,\r\n         \"readOnly\":false,\r\n         \"hidden\":false\r\n\r\n      },\r\n       {\r\n        \"name\": \"lastName\",\r\n        \"type\": \"string\",\r\n        \"title\": \"Last Name\",\r\n        \"description\": \"Last Name\",\r\n        \"isRequired\": false,\r\n         \"readOnly\":false,\r\n         \"hidden\":false\r\n\r\n      }\r\n\r\n    ],\r\n    \"useCustomerSchemaForAttributeMapping\": false,\r\n                \"profileRequired\": true,\r\n                \"segmentRequired\": true,\r\n                \"identityRequired\": true\r\n\r\n \r\n\r\n  },\r\n  \"aggregation\": {\r\n    \"aggregationType\": \"BEST_EFFORT\",\r\n    \"bestEffortAggregation\": {\r\n      \"maxUsersPerRequest\": \"10\",\r\n      \"splitUserById\": false\r\n    }\r\n\r\n  },\r\n   \"backfillHistoricalProfileData\": \"true\",\r\n  \"segmentMappingConfig\": {\r\n    \"mapUserInput\": false,\r\n    \"mapExperiencePlatformSegmentId\": true,\r\n    \"mapExperiencePlatformSegmentName\": false\r\n\r\n  }\r\n}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "End-to-end testing",
+			"item": [
+				{
+					"name": "Import: Stream to PROFILE DataSet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"header\": {\n        \"schemaRef\": {\n            \"id\": \"{{SCHEMA_ID_PROFILE}}\",\n            \"contentType\": \"application/vnd.adobe.xed-full+json;version=1\"\n        },\n        \"imsOrgId\": \"{{IMS_ORG}}\",\n        \"source\": {\n            \"name\": \"{{INLET_SOURCE_ID}}\"\n        },\n        \"datasetId\": \"{{DATASET_ID_PROFILE}}\"\n    },\n    \"body\": {\n        \"xdmMeta\": {\n            \"schemaRef\": {\n                \"id\": \"{{SCHEMA_ID_PROFILE}}\",\n                \"contentType\": \"application/vnd.adobe.xed-full+json;version=1\"\n            }\n        },\n        \"xdmEntity\": {\n            \"person\": {\n                \"name\": {\n                    \"firstName\": \"Clara\",\n                    \"middleName\": \"M\",\n                    \"lastName\": \"Moe\"\n                },\n                \"birthDate\": \"2002-05-10\",\n                \"gender\": \"female\"\n            },\n            \"personalEmail\": {\n                \"primary\": false,\n                \"address\": \"clara.moe@example.com\",\n                \"type\": \"personal\",\n                \"status\": \"active\"\n            },\n            \"workEmail\": {\n                \"primary\": false,\n                \"address\": \"clara.moe@example.com\",\n                \"type\": \"work\",\n                \"status\": \"active\"\n            }\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{INLET_URL}}?synchronousValidation=true",
+							"host": [
+								"{{INLET_URL}}"
+							],
+							"query": [
+								{
+									"key": "synchronousValidation",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Supplemental calls",
+			"item": [
+				{
+					"name": "Destination testing",
+					"item": [
+						{
+							"name": "Retrieve a list of sample profiles for a given destination configuration or destination instance",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/sample-profiles?destinationInstanceId={{destinationInstanceId}}&destinationId={{destinationId}}&count={{count}}",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"sample-profiles"
+									],
+									"query": [
+										{
+											"key": "destinationInstanceId",
+											"value": "{{destinationInstanceId}}"
+										},
+										{
+											"key": "destinationId",
+											"value": "{{destinationId}}"
+										},
+										{
+											"key": "count",
+											"value": "{{count}}"
+										}
+									]
+								},
+								"description": "Use this endpoint as helper to generate sample profiles, either: <ul><li>to use [when making calls to test your destination](https://experienceleague.adobe.com/docs/experience-platform/destinations/destination-sdk/functionality/developer-tools/test-destination.html?lang=en#how-to-use) -  based on the [partner schema by using destination instance ID](https://experienceleague.adobe.com/docs/experience-platform/destinations/destination-sdk/api-reference/developer-tools-reference/sample-profile-generation-api.html?lang=en#generate-sample-profiles-source-schema) (also known as order ID) as a query parameter or </li><li> to use [when crafting your message transformation schema](https://experienceleague.adobe.com/docs/experience-platform/destinations/destination-sdk/functionality/developer-tools/create-template.html?lang=en#render-template-api) - by [using destination ID as a query parameter](https://experienceleague.adobe.com/docs/experience-platform/destinations/destination-sdk/api-reference/developer-tools-reference/sample-profile-generation-api.html?lang=en#generate-sample-profiles-target-schema).</li></ul>"
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve a sample destination template",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/testing/template/sample/:DESTINATION_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"testing",
+										"template",
+										"sample",
+										":DESTINATION_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_CONFIGURATION_ID",
+											"value": "{{DESTINATION_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "Retrieve a sample template corresponding to the destination's `destinationID`. For more information, see the functionality documentation on [generating a sample template](https://experienceleague.adobe.com/docs/experience-platform/destinations/destination-sdk/functionality/developer-tools/create-template.html?lang=en#sample-template-api)."
+							},
+							"response": []
+						},
+						{
+							"name": "Render test profiles based on a test destination template",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json, text/plain, text/xml"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{{body}}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/testing/template/render",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"testing",
+										"template",
+										"render"
+									]
+								},
+								"description": "You can render exported data by making a POST request to the `testing/template/render` endpoint and providing the destination ID of the destination configuration and the template you created using the sample template API endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Destination Testing API",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Cache-Control",
+										"value": "no-cache",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "{{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "8e33d7839a534049b6d2ed074f0568d1",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "EFE243245DB9D3DD0A495E80@AdobeOrg",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/testing/destinationInstance/{destination_instance_id}",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"testing",
+										"destinationInstance",
+										"{destination_instance_id}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Send a message to the partner endpoint",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{{profileListRequest}}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/testing/destinationInstance/:DESTINATION_INSTANCE_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"testing",
+										"destinationInstance",
+										":DESTINATION_INSTANCE_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_INSTANCE_ID",
+											"value": "{{DESTINATION_INSTANCE_ID}}"
+										}
+									]
+								},
+								"description": "This API endpoint tests the connection to your destination by sending messages to the partner endpoint. Optionally, you can send a list of profiles in the request. If you do not send any profiles, Experience Platform generates those internally. In this case, you can view the profiles that were used for validation in the response you receive from your endpoint. <br><br> To use this endpoint, you must have a connection to your destination in the Experience Platform UI. Refer to the *important* note at the top of the [Destination testing API tutorial](https://experienceleague.adobe.com/docs/experience-platform/destinations/destination-sdk/api-reference/developer-tools-reference/destination-testing-api.html?lang=en)."
+							},
+							"response": []
+						}
+					],
+					"description": "The Destination Authoring API provides several tools for testing a destination: [Generate sample profiles](http://www.adobe.com/go/destination-sdk-generate-profiles-en), [generate sample templates](http://www.adobe.com/go/destination-sdk-create-template-en), [perform calls to your destination](http://www.adobe.com/go/destination-sdk-test-destination-en)."
+				},
+				{
+					"name": "Destination configurations",
+					"item": [
+						{
+							"name": "Retrieve a list of destination configurations",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations"
+									]
+								},
+								"description": "You can retrieve a list of all destination configurations for your IMS Organization by making a GET request to the `/destinations` endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Create a destination configuration",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{{body}}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations"
+									]
+								},
+								"description": "You can create a new destination configuration by making a POST request to the `/destinations` endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve a destination configuration",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations/:DESTINATION_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations",
+										":DESTINATION_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_CONFIGURATION_ID",
+											"value": "{{DESTINATION_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "You can retrieve detailed information about a specific destination configuration by making a GET request to the `/destinations` endpoint and providing the ID of the destination configuration you want to retrieve."
+							},
+							"response": []
+						},
+						{
+							"name": "Update a destination configuration",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{{body}}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations/:DESTINATION_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations",
+										":DESTINATION_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_CONFIGURATION_ID",
+											"value": "{{DESTINATION_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "You can update a destination configuration by making a PUT request to the `/destinations` endpoint and providing the ID of the destination configuration you want to update. In the body of the call, provide the updated destination configuration."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete a specific destination configuration",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations/:DESTINATION_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations",
+										":DESTINATION_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_CONFIGURATION_ID",
+											"value": "{{DESTINATION_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "You can delete the specified destination configuration by making a DELETE request to the `/destinations` endpoint and providing the ID of the destination configuration you wish to delete in the request path."
+							},
+							"response": []
+						}
+					],
+					"description": "Destination configurations contain essential metadata for individual destinations, including their name, category, description, and more. The settings in this configuration also determine how Experience Platform users authenticate to your destination, how it appears in the Experience Platform user interface, and the identities that can be exported to your destination. <br><br> For a description of the functionality supported by this endpoint and an example configuration, see the overview on [destination configurations](http://www.adobe.com/go/destination-sdk-destination-configuration-en) in the Destination SDK documentation."
+				},
+				{
+					"name": "Destination servers and templates",
+					"item": [
+						{
+							"name": "Retrieve a list of destination server configurations",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destination-servers",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destination-servers"
+									]
+								},
+								"description": "You can retrieve a list of all destination server configurations for your IMS Organization by making a GET request to the `/destination-servers` endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Create a destination server configuration",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{{body}}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destination-servers",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destination-servers"
+									]
+								},
+								"description": "You can create a new destination server configuration by making a POST request to the `/destination-servers` endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve a specific destination server configuration",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destination-servers/:DESTINATION_SERVER_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destination-servers",
+										":DESTINATION_SERVER_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_SERVER_CONFIGURATION_ID",
+											"value": "{{DESTINATION_SERVER_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "You can retrieve detailed information about a specific destination server configuration by making a GET request to the `/destination-servers` endpoint and providing the ID of the destination server configuration you want to retrieve."
+							},
+							"response": []
+						},
+						{
+							"name": "Update a destination server configuration",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{{body}}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destination-servers/:DESTINATION_SERVER_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destination-servers",
+										":DESTINATION_SERVER_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_SERVER_CONFIGURATION_ID",
+											"value": "{{DESTINATION_SERVER_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "You can update a destination server configuration by making a PUT request to the `/destination-servers` endpoint and providing the ID of the destination server configuration you want to update. In the body of the call, provide the updated destination server configuration."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete a specific destination server configuration",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": []
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destination-servers/:DESTINATION_SERVER_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destination-servers",
+										":DESTINATION_SERVER_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_SERVER_CONFIGURATION_ID",
+											"value": "{{DESTINATION_SERVER_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "You can delete the specified destination server configuration by making a DELETE request to the `/destination-servers` endpoint and providing the ID of the destination server configuration you wish to delete in the request path."
+							},
+							"response": []
+						}
+					],
+					"description": "Destination server configurations contain information about the server receiving the messages (the server on your side). Template configurations allow you to configure how to format the exported message to your destination. <br><br> For a description of the functionality provided by this endpoint, see the overview on [server and template specs](http://www.adobe.com/go/destination-sdk-server-template-configuration-en) in the Destination SDK documentation."
+				},
+				{
+					"name": "Destination publishing",
+					"item": [
+						{
+							"name": "Retrieve a list of destination publish requests",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations/publish",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations",
+										"publish"
+									]
+								},
+								"description": "You can retrieve a list of all destinations submitted for publishing for your IMS Organization by making a GET request to the `/destinations/publish` endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Submit a destination configuration for publishing",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{{body}}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations/publish",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations",
+										"publish"
+									]
+								},
+								"description": "Submit a destination configuration for publishing by making a POST request to the `/destinations/publish` endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Retrieve the status of a specific destination publish request",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations/publish/:DESTINATION_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations",
+										"publish",
+										":DESTINATION_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_CONFIGURATION_ID",
+											"value": "{{DESTINATION_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "You can retrieve detailed information about a specific destination publish request by making a GET request to the `/destinations/publish` endpoint and providing the ID of the destination configuration for which you want to retrieve the publishing status."
+							},
+							"response": []
+						},
+						{
+							"name": "Update a destination publish request",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											"/** Begin Adobe-provided Pre-Request Scripts **/",
+											"// Do not send HTTP Headers with empty variables, as Postman will send the literal variable name",
+											"pm.request.forEachHeader(header => {",
+											"    if (header.value.startsWith(\"{{\") && header.value.endsWith(\"}}\")) {",
+											"        if (!pm.variables.get(header.value.substring(2, header.value.length - 2))) { pm.request.headers.remove(header.key); }",
+											"    }",
+											"});",
+											"",
+											"// Do not send HTTP URL Query Parameters with empty variables, as Postman will send the literal variable name",
+											"pm.request.url.query.remove(q => { ",
+											"    if (q.value.startsWith(\"{{\") && q.value.endsWith(\"}}\")) {",
+											"        return !pm.variables.get(q.value.substring(2, q.value.length - 2));",
+											"    } ",
+											"});",
+											"/** End Adobe-provided Pre-Request Scripts **/"
+										]
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{ACCESS_TOKEN}}",
+										"description": "The access token which can be copied from your Experience Platform integration, prefixed with \"Bearer \". For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"description": "The API key which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"description": "The IMS Organization ID which can be copied from your Experience Platform integration. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en).",
+										"type": "string"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"description": "The name of the sandbox in which the operation will take place. See the [sandboxes overview](https://adobe.com/go/sandbox-overview-en) for more information. For more information on how to obtain this value, visit the [getting started tutorial](http://www.adobe.com/go/destination-sdk-getting-started-en)",
+										"type": "string"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{{body}}"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/activation/authoring/destinations/publish/:DESTINATION_CONFIGURATION_ID",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"activation",
+										"authoring",
+										"destinations",
+										"publish",
+										":DESTINATION_CONFIGURATION_ID"
+									],
+									"variable": [
+										{
+											"key": "DESTINATION_CONFIGURATION_ID",
+											"value": "{{DESTINATION_CONFIGURATION_ID}}"
+										}
+									]
+								},
+								"description": "You can update the allowed organizations in a destination publish request by making a PUT request to the `/destinations/publish` endpoint and providing the ID of the destination for which you want to update the allowed organizations. In the body of the call, provide the updated allowed organizations."
+							},
+							"response": []
+						}
+					],
+					"description": "After you have configured and tested your destination, you can use the destination publishing endpoint to submit it to Adobe for review and publishing. Read more in the [destination publishing API tutorial](http://www.adobe.com/go/destination-sdk-publish-en)."
+				},
+				{
+					"name": "Sandbox setup",
+					"item": [
+						{
+							"name": "Schema Lookup",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.adobe.xed+json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/foundation/schemaregistry/tenant/schemas",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"schemaregistry",
+										"tenant",
+										"schemas"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Segment  job",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.adobe.xed+json",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "[\n        {\n            \"segmentId\": \"0b37b758-4a9f-441b-ba1a-0717b5e3be4f\"\n        }\n    ]"
+								},
+								"url": {
+									"raw": "https://platform.adobe.io/data/core/ups/segment/jobs/",
+									"protocol": "https",
+									"host": [
+										"platform",
+										"adobe",
+										"io"
+									],
+									"path": [
+										"data",
+										"core",
+										"ups",
+										"segment",
+										"jobs",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Segment Definition Lookup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}",
+										"type": "text"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}",
+										"type": "text"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}",
+										"type": "text"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}",
+										"type": "text"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/vnd.adobe.xed+json",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Jake Test Profiles\",\n    \"description\": \"Profile data for Jake Testing\",\n    \"schemaRef\": {\n        \"id\": \"{{SCHEMA_ID_PROFILE}}\",\n        \"contentType\": \"application/vnd.adobe.xed-full+json;version=1\"\n    },\n    \"fileDescription\": {\n        \"persisted\": true,\n        \"containerFormat\": \"parquet\",\n        \"format\": \"parquet\"\n    },\n    \"tags\": {\n        \"unifiedIdentity\": [\"enabled:true\"],\n        \"unifiedProfile\": [\"enabled:true\"]\n    }\n}"
+								},
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/core/ups/segment/definitions",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"core",
+										"ups",
+										"segment",
+										"definitions"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Base Connections Lookup",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/connections",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"flowservice",
+										"connections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Source Connection Lookup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"name\": \"Jake's Testing Streaming Source Connection\",\r\n      \"description\": \"A streaming source connection for Jake's Testing\",\r\n      \"baseConnectionId\": \"{{BASE_CONNECTION_ID}}\",\r\n      \"connectionSpec\": {\r\n          \"id\": \"bc7b00d6-623a-4dfc-9fdb-f1240aeadaeb\",\r\n          \"version\": \"1.0\"\r\n      }\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/sourceConnections",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"flowservice",
+										"sourceConnections"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Target Connection Lookup",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "bearer {{ACCESS_TOKEN}}"
+									},
+									{
+										"key": "x-api-key",
+										"value": "{{API_KEY}}"
+									},
+									{
+										"key": "x-gw-ims-org-id",
+										"value": "{{IMS_ORG}}"
+									},
+									{
+										"key": "x-sandbox-name",
+										"value": "{{SANDBOX_NAME}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n      \"name\": \"Jake's Streaming Target Connection\",\r\n      \"description\": \"Jake's Streaming Target Connection\",\r\n      \"data\": {\r\n          \"schema\": {\r\n              \"id\": \"{{SCHEMA_ID_PROFILE}}\",\r\n              \"version\": \"application/vnd.adobe.xed-full+json;version=1.0\"\r\n          }\r\n      },\r\n      \"params\": {\r\n          \"dataSetId\": \"{{DATASET_ID_PROFILE}}\"\r\n      },\r\n          \"connectionSpec\": {\r\n          \"id\": \"c604ff05-7f1a-43c0-8e18-33bf874cb11c\",\r\n          \"version\": \"1.0\"\r\n      }\r\n  }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{PLATFORM_GATEWAY}}/data/foundation/flowservice/targetConnections",
+									"host": [
+										"{{PLATFORM_GATEWAY}}"
+									],
+									"path": [
+										"data",
+										"foundation",
+										"flowservice",
+										"targetConnections"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}
