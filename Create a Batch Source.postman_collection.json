@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "bf41c5d3-80ec-4d4f-85d5-cacea30a8409",
-		"name": "Create a File-Based Source",
+		"name": "Create a Batch Source",
 		"description": "This is to create the configuration for a Self-serve Sources batch connector.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
 		"_exporter_id": "15756582"
